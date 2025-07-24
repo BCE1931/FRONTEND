@@ -7,13 +7,17 @@ import Middle from "./AUTH/Middle";
 import Register from "./AUTH/Register";
 import { ToastContainer } from "react-toastify";
 import { Navigate } from "react-router-dom";
+import Home from "./COMPONENTS/Home";
+import Selecction from "./COMPONENTS/Selecction";
+import Quesdisply from "./COMPONENTS/Quesdisply";
+import Add from "./COMPONENTS/Add";
+import Selectadd from "./COMPONENTS/Selectadd";
+import Otherdisply from "./COMPONENTS/Otherdisply";
 
 function App() {
-  const [count, setCount] = useState(0);
-
   const PublicRoute = ({ element }) => {
     return localStorage.getItem("username") ? (
-      <Navigate to="/try1" replace />
+      <Navigate to="/home" replace />
     ) : (
       element
     );
@@ -41,7 +45,25 @@ function App() {
             path="/middle"
             element={<PublicRoute element={<Middle />} />}
           />
-          <Route path="/try1" element={<ProtectedRoute element={<Try1 />} />} />
+          {/* <Route path="/try1" element={<ProtectedRoute element={<Try1 />} />} /> */}
+          <Route path="/home" element={<ProtectedRoute element={<Home />} />} />
+          <Route
+            path="/selection"
+            element={<ProtectedRoute element={<Selecction />} />}
+          />
+          <Route
+            path="/otherdisp"
+            element={<ProtectedRoute element={<Otherdisply />} />}
+          />
+          <Route
+            path="/questions"
+            element={<ProtectedRoute element={<Quesdisply />} />}
+          />
+          <Route
+            path="/add1"
+            element={<ProtectedRoute element={<Selectadd />} />}
+          />
+          <Route path="/add" element={<ProtectedRoute element={<Add />} />} />
         </Routes>
       </BrowserRouter>
 

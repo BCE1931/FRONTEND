@@ -5,24 +5,67 @@ const Try1 = () => {
   const [fetching, setfetching] = useState(false);
   const handledata = async () => {
     try {
-      setfetching(true);
       const resp = await fetch(
-        // `https://backend-spring-e04h.onrender.com/api/v1/userrs`
-        // `http://localhost:8083/api/v1/userrs`
-        `http://3.82.136.89:8080/api/v1/userrs`
+        `https://springapp1402-awajgpegfsdkh2ce.canadacentral-01.azurewebsites.net/api/v1/`,
+        {
+          headers: {
+            Authorization: `Bearer ${getToken()}`,
+            "Content-type": "application/json",
+          },
+        }
       );
-      if (!resp.ok) {
-        console.log("error in fetching data");
+
+      if (resp.status === 401) {
+        const suxxess = await refreshtoken();
+        console.log(suxxess);
+        if (suxxess) {
+          return handledata();
+        } else {
+          toast.error("Unable to refresh token.");
+          navigate("/");
+          return;
+        }
       }
-      setfetching(false);
+
+      if (!resp.ok) {
+        console.log("Error in fetching DATA IN TRY");
+        return;
+      }
+
       const data = await resp.json();
-      console.log(data);
-      setdata(data);
+      console.log("YOUR DATA", data);
+      settopics(data);
     } catch (err) {
-      setfetching(false);
-      console.log("error in fetching or connected to backend " + err);
+      setdata(false);
+      console.log("Error connecting to backend while fetching topics", err);
     } finally {
       setfetching(false);
+    }
+  };
+
+  const refreshtoken = async () => {
+    try {
+      const resp = await fetch(
+        `https://springapp1402-awajgpegfsdkh2ce.canadacentral-01.azurewebsites.net/token/refresh`,
+        {
+          method: "POST",
+          headers: {
+            "Content-type": "application/json",
+          },
+          body: JSON.stringify({
+            refreshtoken: getrefershtoken(),
+          }),
+        }
+      );
+      if (resp.status === 200) {
+        const data = await resp.json();
+        saveToken(data.token);
+        saverefershtoken(data.refreshtoken);
+        toast.success("Hey You goe nwe session token");
+        return true;
+      }
+    } catch (e) {
+      console.log("error in getting refresh token");
     }
   };
 
