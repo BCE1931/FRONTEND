@@ -13,6 +13,7 @@ import Quesdisply from "./COMPONENTS/Quesdisply";
 import Add from "./COMPONENTS/Add";
 import Selectadd from "./COMPONENTS/Selectadd";
 import Otherdisply from "./COMPONENTS/Otherdisply";
+import Navbar from "./COMPONENTS/Navbar";
 
 function App() {
   const PublicRoute = ({ element }) => {
@@ -34,6 +35,7 @@ function App() {
   return (
     <div>
       <ToastContainer />
+      <Navbar />
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<PublicRoute element={<LoginPage />} />} />
