@@ -36,6 +36,8 @@ const LoginPage = () => {
         const tokenData = await tokenResp.json();
         saveToken(tokenData.token);
         saverefershtoken(tokenData.refreshtoken);
+        console.log(tokenData.token);
+        console.log(tokenData.refreshtoken);
         navigate("/home");
       } catch (e) {
         console.log("Error in OAuth token creation");
