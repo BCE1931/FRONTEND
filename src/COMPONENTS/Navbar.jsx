@@ -11,10 +11,10 @@ const Navbar = () => {
   const navigate = useNavigate();
 
   const handlelogout = () => {
-    saverefershtoken(null);
-    saveToken(null);
-    saveusername(null);
-    saveemail(null);
+    saverefershtoken("");
+    saveToken("");
+    saveusername("");
+    saveemail("");
     navigate("/");
   };
 
