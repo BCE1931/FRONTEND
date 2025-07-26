@@ -146,7 +146,7 @@ const Add = () => {
         const suxxess = await refreshtoken();
         console.log(suxxess);
         if (suxxess) {
-          return handleadddsa();
+          return handleaddother();
         } else {
           toast.error("Unable to refresh token.");
           navigate("/");

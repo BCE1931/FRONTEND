@@ -131,7 +131,7 @@ const Quesdisply = () => {
       if (resp.status === 401) {
         const suxxess = await refreshtoken();
         if (suxxess) {
-          return getquestions();
+          return getworkquestions();
         } else {
           toast.error("Unable to refresh token.");
           navigate("/");
@@ -173,7 +173,7 @@ const Quesdisply = () => {
         const suxxess = await refreshtoken();
         console.log(suxxess);
         if (suxxess) {
-          return getworkquestions();
+          return getworktopics();
         } else {
           toast.error("Unable to refresh token.");
           navigate("/");

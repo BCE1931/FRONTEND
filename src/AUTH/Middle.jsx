@@ -13,9 +13,12 @@ const Middle = () => {
   useEffect(() => {
     const fetchauth = async () => {
       try {
-        const resp = await fetch(`http://localhost:8083/oauth/user-info`, {
-          credentials: "include",
-        });
+        const resp = await fetch(
+          `https://springapp1402-awajgpegfsdkh2ce.canadacentral-01.azurewebsites.net/oauth/user-info`,
+          {
+            credentials: "include",
+          }
+        );
         if (!resp.ok) {
           console.log("Error fetching auth info");
           return;
@@ -26,7 +29,7 @@ const Middle = () => {
         if (data.exist === true) {
           saveusername(data.username);
           const tokenResp = await fetch(
-            `http://localhost:8083/token/tokengen/${data.username}`,
+            `https://springapp1402-awajgpegfsdkh2ce.canadacentral-01.azurewebsites.net/token/tokengen/${data.username}`,
             {
               credentials: "include",
               headers: { "Content-Type": "application/json" },
