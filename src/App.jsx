@@ -35,7 +35,7 @@ function App() {
     <BrowserRouter>
       <div>
         <ToastContainer />
-        <Navbar />
+        {/* <Navbar /> */}
         <Routes>
           <Route path="/" element={<PublicRoute element={<LoginPage />} />} />
           <Route
