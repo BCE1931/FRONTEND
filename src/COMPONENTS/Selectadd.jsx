@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 const Selectadd = () => {
   const [opt, setopt] = useState("");
-  const options = ["DSA", "OS", "CN", "APPTITUDE"];
+  const options = ["DSA", "OS", "CN", "APPTITUDE", "OTHER"];
   const navigate = useNavigate();
 
   const handleoptions = (ind) => {
