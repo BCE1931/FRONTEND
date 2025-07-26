@@ -1,12 +1,11 @@
 import { useState } from "react";
 import React from "react";
 import Try1 from "./COMPONENTS/Try1";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import LoginPage from "./AUTH/LoginPage";
 import Middle from "./AUTH/Middle";
 import Register from "./AUTH/Register";
 import { ToastContainer } from "react-toastify";
-import { Navigate } from "react-router-dom";
 import Home from "./COMPONENTS/Home";
 import Selecction from "./COMPONENTS/Selecction";
 import Quesdisply from "./COMPONENTS/Quesdisply";
@@ -33,10 +32,10 @@ function App() {
   };
 
   return (
-    <div>
-      <ToastContainer />
-      <Navbar />
-      <BrowserRouter>
+    <BrowserRouter>
+      <div>
+        <ToastContainer />
+        <Navbar />
         <Routes>
           <Route path="/" element={<PublicRoute element={<LoginPage />} />} />
           <Route
@@ -47,7 +46,6 @@ function App() {
             path="/middle"
             element={<PublicRoute element={<Middle />} />}
           />
-          {/* <Route path="/try1" element={<ProtectedRoute element={<Try1 />} />} /> */}
           <Route path="/home" element={<ProtectedRoute element={<Home />} />} />
           <Route
             path="/selection"
@@ -67,14 +65,8 @@ function App() {
           />
           <Route path="/add" element={<ProtectedRoute element={<Add />} />} />
         </Routes>
-      </BrowserRouter>
-
-      {/* <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Try1 />} />
-        </Routes>
-      </BrowserRouter> */}
-    </div>
+      </div>
+    </BrowserRouter>
   );
 }
 
