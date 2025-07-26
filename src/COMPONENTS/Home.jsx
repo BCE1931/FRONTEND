@@ -8,6 +8,9 @@ import {
   FaCalculator,
   FaPlusCircle,
   FaPuzzlePiece,
+  FaDatabase,
+  FaCloud,
+  FaReact,
 } from "react-icons/fa";
 
 const Home = () => {
@@ -31,6 +34,9 @@ const Home = () => {
       name: "EXTRA MODULES",
       icon: <FaPuzzlePiece className="text-xl text-teal-600" />,
     },
+    { name: "SQL", icon: <FaDatabase className="text-xl text-teal-600" /> },
+    { name: "CLOUD", icon: <FaCloud className="text-xl text-teal-600" /> },
+    { name: "REACT", icon: <FaReact className="text-xl text-teal-600" /> },
   ];
 
   const navigate = useNavigate();
