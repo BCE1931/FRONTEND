@@ -95,7 +95,7 @@ const LoginPage = () => {
 
         <div className="space-y-4 mb-6">
           <a
-            href="http://localhost:8083/oauth2/authorization/google"
+            href="https://springapp1402-awajgpegfsdkh2ce.canadacentral-01.azurewebsites.net/oauth2/authorization/google"
             onClick={() => setprovider(true)}
             className="flex items-center justify-center w-full border border-gray-300 rounded-lg py-2 hover:bg-gray-100 transition"
           >
@@ -108,7 +108,7 @@ const LoginPage = () => {
           </a>
 
           <a
-            href="http://localhost:8083/oauth2/authorization/github"
+            href="https://springapp1402-awajgpegfsdkh2ce.canadacentral-01.azurewebsites.net/oauth2/authorization/github"
             onClick={() => setprovider(true)}
             className="flex items-center justify-center w-full border border-gray-300 rounded-lg py-2 hover:bg-gray-100 transition"
           >

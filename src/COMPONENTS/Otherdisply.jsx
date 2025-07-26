@@ -119,30 +119,32 @@ const Otherdisply = () => {
   return (
     <div className="flex flex-col h-screen bg-black text-white relative">
       {/* Top Navbar with Dates */}
-      <div className="bg-gray-800 px-4 py-3 flex flex-wrap gap-3 overflow-x-auto border-b border-gray-700">
-        <button
-          onClick={() => filterByDate("All")}
-          className={`px-3 py-1 rounded-full ${
-            selectedDate === "All"
-              ? "bg-purple-500 text-white"
-              : "bg-gray-600 hover:bg-gray-700"
-          }`}
-        >
-          All
-        </button>
-        {days.map((date, i) => (
+      <div className="bg-gray-800 px-4 py-3 border-b border-gray-700">
+        <div className="flex gap-3 overflow-x-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-700">
           <button
-            key={i}
-            onClick={() => filterByDate(date)}
-            className={`px-3 py-1 rounded-full ${
-              selectedDate === date
+            onClick={() => filterByDate("All")}
+            className={`flex-shrink-0 px-3 py-1 rounded-full ${
+              selectedDate === "All"
                 ? "bg-purple-500 text-white"
                 : "bg-gray-600 hover:bg-gray-700"
             }`}
           >
-            {date}
+            All
           </button>
-        ))}
+          {days.map((date, i) => (
+            <button
+              key={i}
+              onClick={() => filterByDate(date)}
+              className={`flex-shrink-0 px-3 py-1 rounded-full ${
+                selectedDate === date
+                  ? "bg-purple-500 text-white"
+                  : "bg-gray-600 hover:bg-gray-700"
+              }`}
+            >
+              {date}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Main Content Area */}

@@ -18,6 +18,7 @@ const Add = () => {
   const [attempted, setattempted] = useState(false);
   const [linkError, setLinkError] = useState("");
   const [questioninfo, setquestioninfo] = useState("");
+  const [submitting, setsubmitting] = useState(false);
 
   const location = useLocation();
   const topic = location.state?.opt;
@@ -56,6 +57,7 @@ const Add = () => {
   ];
 
   const handleadddsa = async () => {
+    setsubmitting(true);
     try {
       const resp = await fetch(
         `https://springapp1402-awajgpegfsdkh2ce.canadacentral-01.azurewebsites.net/api/v1/adddsawork`,
@@ -92,8 +94,11 @@ const Add = () => {
       }
       const data = await resp.text();
       toast.success("Your Work Is Uploaded");
+      setsubmitting(false);
     } catch (err) {
       console.log("eror in connecteing to backend");
+    } finally {
+      setsubmitting(false);
     }
   };
 
@@ -124,6 +129,7 @@ const Add = () => {
   };
 
   const handleaddother = async () => {
+    setsubmitting(true);
     try {
       const resp = await fetch(
         `https://springapp1402-awajgpegfsdkh2ce.canadacentral-01.azurewebsites.net/api/v1/addotherwork`,
@@ -157,8 +163,11 @@ const Add = () => {
       }
       const data = await resp.text();
       toast.success("Your Work Is Uploaded");
+      setsubmitting(false);
     } catch (err) {
       console.log("eror in connecteing to backend");
+    } finally {
+      setsubmitting(false);
     }
   };
 
@@ -184,6 +193,13 @@ const Add = () => {
 
   return (
     <div className="max-w-lg mx-auto p-4">
+      {submitting && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+          <div className="bg-white text-black px-6 py-4 rounded shadow-lg text-center">
+            <p className="text-lg font-semibold">Submitting your question...</p>
+          </div>
+        </div>
+      )}
       <h2 className="text-2xl font-semibold mb-4">
         Add New Question to {topic}
       </h2>
