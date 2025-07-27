@@ -12,8 +12,16 @@ import {
   FaCloud,
   FaReact,
 } from "react-icons/fa";
+import {
+  saveemail,
+  saverefershtoken,
+  saveToken,
+  saveusername,
+} from "../UTILS/Local";
 
 const Home = () => {
+  const navigate = useNavigate();
+
   const topics = [
     { name: "DSA", icon: <FaCode className="text-xl text-teal-600" /> },
     {
@@ -39,27 +47,44 @@ const Home = () => {
     { name: "REACT", icon: <FaReact className="text-xl text-teal-600" /> },
   ];
 
-  const navigate = useNavigate();
-
   const selecttopic = (ind) => {
-    console.log(topics[ind].name);
+    const selected = topics[ind].name;
+    console.log(selected);
     if (ind === 0) {
       navigate("/questions", { state: { work: false } });
-      console.log(topics[ind].name);
-    } else if (ind == 1) {
+    } else if (ind === 1) {
       navigate("/questions", { state: { work: true } });
-    } else if (ind == 5) {
+    } else if (ind === 5) {
       navigate("/add1");
     } else {
-      // Navigate directly to scroll page with selected topic
-      navigate("/otherdisp", { state: { topic: topics[ind].name } });
+      navigate("/otherdisp", { state: { topic: selected } });
     }
+  };
+
+  const handleLogout = () => {
+    // Perform logout logic here (clear tokens, auth state, etc.)
+    saverefershtoken("");
+    saveToken("");
+    saveusername("");
+    saveemail("");
+    navigate("/");
+    // Redirect to login page
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-100 to-teal-200 flex flex-col items-center py-10 px-4">
-      <h1 className="text-3xl font-bold text-emerald-800 mb-8">📚 My Topics</h1>
+      {/* Header with Logout */}
+      <div className="w-full max-w-6xl flex justify-between items-center mb-8">
+        <h1 className="text-3xl font-bold text-emerald-800">📚 My Topics</h1>
+        <button
+          onClick={handleLogout}
+          className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition"
+        >
+          Logout
+        </button>
+      </div>
 
+      {/* Topics Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 w-full max-w-4xl">
         {topics.map((topic, ind) => (
           <button
