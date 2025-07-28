@@ -116,6 +116,10 @@ const Otherdisply = () => {
 
   const ques = filteredQues[index] || {};
 
+  const toggleModify = () => {
+    navigate("/add", { state: { topic: topic, chage: true, ques: ques } });
+  };
+
   return (
     <div className="flex flex-col h-screen bg-black text-white relative">
       {/* Top Navbar with Dates */}
@@ -200,21 +204,31 @@ const Otherdisply = () => {
             {/* Question Card */}
             <div className="relative w-[450px] h-full bg-white text-black rounded-xl shadow-lg overflow-hidden">
               <div className="flex flex-col h-full">
+                {/* Top half: Question and Info */}
                 <div className="flex-1 overflow-y-auto p-4 border-b border-gray-300">
-                  <h2 className="text-lg font-semibold mb-2 text-center">
+                  <h2 className="text-lg font-semibold mb-2 text-center whitespace-pre-wrap">
                     {ques.question || "No question text"}
                   </h2>
-                  <p className="text-sm text-gray-700 text-center">
+                  <p className="text-sm text-gray-700 text-center whitespace-pre-wrap">
                     {ques.questioninfo || "No additional info available"}
                   </p>
                 </div>
 
+                {/* Bottom half: Logic */}
                 <div className="flex-1 overflow-y-auto p-4">
                   <h3 className="text-md font-medium mb-1">Logic</h3>
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-gray-600 whitespace-pre-wrap">
                     {ques.logic || "No logic added yet"}
                   </p>
                 </div>
+              </div>
+              <div className="absolute right-4 bottom-4 flex flex-col gap-4">
+                <button
+                  onClick={toggleModify}
+                  className="bg-yellow-500 hover:bg-yellow-600 text-white rounded-full p-3"
+                >
+                  ✏️
+                </button>
               </div>
             </div>
           </>

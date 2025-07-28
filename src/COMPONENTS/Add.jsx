@@ -22,16 +22,29 @@ const Add = () => {
 
   const location = useLocation();
   const topic = location.state?.opt;
+  const change = location.state?.change;
+  const ques = location.state?.ques;
+
+  useEffect(() => {
+    if (change && ques) {
+      setquestion(ques.question || "");
+      setlogic(ques.logic || "");
+      setcode(ques.code || "");
+      setlink(ques.link || "");
+      setattempted(ques.attempted || false);
+      setimportant(ques.important || false);
+      setsubtopic(ques.subtopic || "");
+      setquestioninfo(ques.questioninfo || "");
+    }
+  }, [change, ques]);
 
   const subtopics = [
     "Array",
     "Dynamic Programming",
     "Graph",
     "Hashing",
-    "Interval",
     "Linked List",
     "Matrix",
-    "Design",
     "Sorting",
     "String",
     "Stack",
@@ -42,17 +55,12 @@ const Add = () => {
     "Two Pointers",
     "Sliding Window",
     "Binary Search",
-    "Trees",
-    "Tries",
     "Heap / Priority Queue",
     "Backtracking",
     "Graphs",
-    "Advanced Graphs",
     "1-D Dynamic Programming",
     "2-D Dynamic Programming",
     "Greedy",
-    "Intervals",
-    "Math & Geometry",
     "Bit Manipulation",
   ];
 
@@ -94,6 +102,13 @@ const Add = () => {
       }
       const data = await resp.text();
       toast.success("Your Work Is Uploaded");
+      setquestion("");
+      setquestioninfo("");
+      setlogic("");
+      setcode("");
+      setimportant(false);
+      setlink("");
+      setattempted(false);
       setsubmitting(false);
     } catch (err) {
       console.log("eror in connecteing to backend");
@@ -163,6 +178,13 @@ const Add = () => {
       }
       const data = await resp.text();
       toast.success("Your Work Is Uploaded");
+      setquestion("");
+      setquestioninfo("");
+      setlogic("");
+      setcode("");
+      setimportant(false);
+      setlink("");
+      setattempted(false);
       setsubmitting(false);
     } catch (err) {
       console.log("eror in connecteing to backend");
@@ -171,10 +193,46 @@ const Add = () => {
     }
   };
 
+  const handlechange = async () => {
+    setsubmitting(true);
+    try {
+      const resp = await fetch(
+        `https://springapp1402-awajgpegfsdkh2ce.canadacentral-01.azurewebsites.net/api/v1/modify`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${getToken()}`,
+            "Content-type": "application/json",
+          },
+          body: JSON.stringify({
+            question: question,
+            important: important,
+            logic: logic,
+            code: code,
+            questioninfo: questioninfo,
+            attempted: attempted,
+            subtopic: subtopic,
+            link: link,
+          }),
+        }
+      );
+      const data = await resp.json();
+      console.log("Modified successfully", data);
+      setsubmitting(false);
+      toast.success("Question modified successfully");
+    } catch (e) {
+      console.log("error on connecting to backend in add chages");
+      setsubmitting(false);
+    } finally {
+      setsubmitting(false);
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    if (topic == "DSA") {
+    if (change) {
+      handlechange();
+    } else if (!change && topic == "DSA") {
       handleadddsa();
     } else {
       handleaddother();
@@ -200,10 +258,15 @@ const Add = () => {
           </div>
         </div>
       )}
-      <h2 className="text-2xl font-semibold mb-4">
-        Add New Question to {topic}
-      </h2>
-
+      {change ? (
+        <h2 className="text-2xl font-semibold mb-4">
+          MODIFY QUESTION FROM {topic}
+        </h2>
+      ) : (
+        <h2 className="text-2xl font-semibold mb-4">
+          Add New Question to {topic}
+        </h2>
+      )}
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <input
           type="text"

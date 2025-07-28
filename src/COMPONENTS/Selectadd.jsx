@@ -9,7 +9,7 @@ const Selectadd = () => {
   const handleoptions = (ind) => {
     console.log(options[ind]);
     setopt(options[ind]);
-    navigate("/add", { state: { opt: options[ind] } });
+    navigate("/add", { state: { opt: options[ind], change: false, ques: "" } });
   };
 
   return (
