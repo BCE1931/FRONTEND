@@ -217,10 +217,29 @@ const Add = () => {
           }),
         }
       );
-      const data = await resp.json();
-      console.log("Modified successfully", data);
+      if (resp.status === 401) {
+        const suxxess = await refreshtoken();
+        console.log(suxxess);
+        if (suxxess) {
+          return handlechange();
+        } else {
+          toast.error("Unable to refresh token.");
+          navigate("/");
+        }
+      }
+      if (!resp.ok) {
+        console.log("error in chaging");
+      }
+      const data = await resp.text();
+      toast.success("Your Work Is Uploaded");
+      setquestion("");
+      setquestioninfo("");
+      setlogic("");
+      setcode("");
+      setimportant(false);
+      setlink("");
+      setattempted(false);
       setsubmitting(false);
-      toast.success("Question modified successfully");
     } catch (e) {
       console.log("error on connecting to backend in add chages");
       setsubmitting(false);
@@ -268,7 +287,10 @@ const Add = () => {
           Add New Question to {topic}
         </h2>
       )}
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+      <form
+        onSubmit={handleSubmit}
+        className="flex flex-col gap-4 whitespace-pre-wrap"
+      >
         <input
           type="text"
           className="p-3 border rounded-md w-full"
@@ -289,7 +311,7 @@ const Add = () => {
 
         {/* Logic textarea */}
         <textarea
-          className="p-3 border rounded-md w-full h-[150px] resize-y overflow-y-auto"
+          className="p-3 border rounded-md w-full h-[150px] resize-y overflow-y-auto whitespace-pre-wrap"
           placeholder="Enter Logic"
           value={logic}
           onChange={(e) => setlogic(e.target.value)}
@@ -299,7 +321,7 @@ const Add = () => {
         {/* Code textarea (only for DSA) */}
         {topic === "DSA" && (
           <textarea
-            className="p-3 border rounded-md w-full h-[200px] resize-y overflow-y-auto"
+            className="p-3 border rounded-md w-full h-[200px] resize-y overflow-y-auto whitespace-pre-wrap"
             placeholder="Enter Code"
             value={code}
             onChange={(e) => setcode(e.target.value)}
