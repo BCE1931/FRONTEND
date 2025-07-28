@@ -117,7 +117,7 @@ const Otherdisply = () => {
   const ques = filteredQues[index] || {};
 
   const toggleModify = () => {
-    navigate("/add", { state: { topic: topic, chage: true, ques: ques } });
+    navigate("/add", { state: { topic: topic, change: true, ques: ques } });
   };
 
   return (

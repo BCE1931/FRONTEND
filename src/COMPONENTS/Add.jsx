@@ -22,7 +22,7 @@ const Add = () => {
   const [submitting, setsubmitting] = useState(false);
 
   const location = useLocation();
-  const topic = location.state?.opt;
+  const topic = location.state?.topic;
   const change = location.state?.change;
   const ques = location.state?.ques;
 

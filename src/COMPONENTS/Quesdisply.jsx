@@ -231,7 +231,7 @@ const Quesdisply = () => {
   };
 
   const toggleModify = () => {
-    navigate("/add", { state: { topic: "DSA", chage: true, ques: ques } });
+    navigate("/add", { state: { topic: "DSA", change: true, ques: ques } });
   };
 
   // Keyboard navigation
