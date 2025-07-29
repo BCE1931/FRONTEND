@@ -209,7 +209,7 @@ const Otherdisply = () => {
                   <h2 className="text-lg font-semibold mb-2 text-center whitespace-pre-wrap">
                     {ques.question || "No question text"}
                   </h2>
-                  <p className="text-sm text-gray-700 text-center whitespace-pre-wrap">
+                  <p className="text-sm text-gray-700 whitespace-pre-wrap">
                     {ques.questioninfo || "No additional info available"}
                   </p>
                 </div>
