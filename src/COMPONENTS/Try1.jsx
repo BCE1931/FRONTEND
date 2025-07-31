@@ -1,19 +1,16 @@
 import React, { useState } from "react";
-
+import BASE_URL from "../UTILS/config";
 const Try1 = () => {
   const [data, setdata] = useState({});
   const [fetching, setfetching] = useState(false);
   const handledata = async () => {
     try {
-      const resp = await fetch(
-        `https://springapp1402-awajgpegfsdkh2ce.canadacentral-01.azurewebsites.net/api/v1/`,
-        {
-          headers: {
-            Authorization: `Bearer ${getToken()}`,
-            "Content-type": "application/json",
-          },
-        }
-      );
+      const resp = await fetch(`${BASE_URL}/api/v1/`, {
+        headers: {
+          Authorization: `Bearer ${getToken()}`,
+          "Content-type": "application/json",
+        },
+      });
 
       if (resp.status === 401) {
         const suxxess = await refreshtoken();
@@ -45,18 +42,15 @@ const Try1 = () => {
 
   const refreshtoken = async () => {
     try {
-      const resp = await fetch(
-        `https://springapp1402-awajgpegfsdkh2ce.canadacentral-01.azurewebsites.net/token/refresh`,
-        {
-          method: "POST",
-          headers: {
-            "Content-type": "application/json",
-          },
-          body: JSON.stringify({
-            refreshtoken: getrefershtoken(),
-          }),
-        }
-      );
+      const resp = await fetch(`${BASE_URL}/token/refresh`, {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify({
+          refreshtoken: getrefershtoken(),
+        }),
+      });
       if (resp.status === 200) {
         const data = await resp.json();
         saveToken(data.token);

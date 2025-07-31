@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { saveusername, saveToken, saverefershtoken } from "../UTILS/Local";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import BASE_URL from "../UTILS/config";
 
 const Middle = () => {
   const [username, setname] = useState("");
@@ -13,12 +14,9 @@ const Middle = () => {
   useEffect(() => {
     const fetchauth = async () => {
       try {
-        const resp = await fetch(
-          `https://springapp1402-awajgpegfsdkh2ce.canadacentral-01.azurewebsites.net/oauth/user-info`,
-          {
-            credentials: "include",
-          }
-        );
+        const resp = await fetch(`${BASE_URL}/oauth/user-info`, {
+          credentials: "include",
+        });
         if (!resp.ok) {
           console.log("Error fetching auth info");
           return;
@@ -29,7 +27,7 @@ const Middle = () => {
         if (data.exist === true) {
           saveusername(data.username);
           const tokenResp = await fetch(
-            `https://springapp1402-awajgpegfsdkh2ce.canadacentral-01.azurewebsites.net/token/tokengen/${data.username}`,
+            `${BASE_URL}/token/tokengen/${data.username}`,
             {
               credentials: "include",
               headers: { "Content-Type": "application/json" },
@@ -55,27 +53,24 @@ const Middle = () => {
   const register = async (e) => {
     e.preventDefault();
     try {
-      const resp = await fetch(
-        `https://springapp1402-awajgpegfsdkh2ce.canadacentral-01.azurewebsites.net/oauth/register`,
-        {
-          method: "POST",
-          credentials: "include",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            username,
-            email,
-            password,
-            project: "trying jwt",
-          }),
-        }
-      );
+      const resp = await fetch(`${BASE_URL}/oauth/register`, {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          username,
+          email,
+          password,
+          project: "trying jwt",
+        }),
+      });
       if (!resp.ok) throw new Error("Registration failed");
 
       const res = await resp.json();
       console.log(res);
       if (res.exist === false) {
         const tokenResp = await fetch(
-          `https://springapp1402-awajgpegfsdkh2ce.canadacentral-01.azurewebsites.net/token/tokengen/${username}`,
+          `${BASE_URL}/token/tokengen/${username}`,
           {
             credentials: "include",
             headers: { "Content-Type": "application/json" },

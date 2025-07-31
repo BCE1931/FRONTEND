@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { saverefershtoken, saveToken, saveusername } from "../UTILS/Local";
+import BASE_URL from "../UTILS/config.js";
 
 const LoginPage = () => {
   const [username, setname] = useState("");
@@ -14,24 +15,18 @@ const LoginPage = () => {
 
     const fetchProvider = async () => {
       try {
-        const resp = await fetch(
-          `https://springapp1402-awajgpegfsdkh2ce.canadacentral-01.azurewebsites.net/oauth/authlogin`,
-          {
-            credentials: "include",
-            headers: { "Content-Type": "application/json" },
-          }
-        );
+        const resp = await fetch(`${BASE_URL}/oauth/authlogin`, {
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+        });
         if (!resp.ok) throw new Error("Error fetching auth username");
         const data = await resp.text();
         saveusername(data);
 
-        const tokenResp = await fetch(
-          `https://springapp1402-awajgpegfsdkh2ce.canadacentral-01.azurewebsites.net/token/tokengen/${data}`,
-          {
-            credentials: "include",
-            headers: { "Content-Type": "application/json" },
-          }
-        );
+        const tokenResp = await fetch(`${BASE_URL}/token/tokengen/${data}`, {
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+        });
         if (!tokenResp.ok) throw new Error("Token generation failed");
         const tokenData = await tokenResp.json();
         saveToken(tokenData.token);
@@ -52,19 +47,16 @@ const LoginPage = () => {
   const login = async (e) => {
     e.preventDefault();
     try {
-      const resp = await fetch(
-        `https://springapp1402-awajgpegfsdkh2ce.canadacentral-01.azurewebsites.net/oauth/login`,
-        {
-          method: "POST",
-          credentials: "include",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            username,
-            password,
-            project: "trying jwt",
-          }),
-        }
-      );
+      const resp = await fetch(`${BASE_URL}/oauth/login`, {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          username,
+          password,
+          project: "trying jwt",
+        }),
+      });
       if (!resp.ok) throw new Error("Error in login");
 
       const res = await resp.json();
@@ -95,7 +87,7 @@ const LoginPage = () => {
 
         <div className="space-y-4 mb-6">
           <a
-            href="https://springapp1402-awajgpegfsdkh2ce.canadacentral-01.azurewebsites.net/oauth2/authorization/google"
+            href="${BASE_URL}/oauth2/authorization/google"
             onClick={() => setprovider(true)}
             className="flex items-center justify-center w-full border border-gray-300 rounded-lg py-2 hover:bg-gray-100 transition"
           >
@@ -108,7 +100,7 @@ const LoginPage = () => {
           </a>
 
           <a
-            href="https://springapp1402-awajgpegfsdkh2ce.canadacentral-01.azurewebsites.net/oauth2/authorization/github"
+            href="${BASE_URL}/oauth2/authorization/github"
             onClick={() => setprovider(true)}
             className="flex items-center justify-center w-full border border-gray-300 rounded-lg py-2 hover:bg-gray-100 transition"
           >

@@ -8,6 +8,7 @@ import {
 } from "../UTILS/Local";
 import { toast } from "react-toastify";
 import { useEffect } from "react";
+import BASE_URL from "../UTILS/config";
 
 const Add = () => {
   const [question, setquestion] = useState("");
@@ -68,26 +69,23 @@ const Add = () => {
   const handleadddsa = async () => {
     setsubmitting(true);
     try {
-      const resp = await fetch(
-        `https://springapp1402-awajgpegfsdkh2ce.canadacentral-01.azurewebsites.net/api/v1/adddsawork`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${getToken()}`,
-            "Content-type": "application/json",
-          },
-          body: JSON.stringify({
-            question: question,
-            important: important,
-            logic: logic,
-            code: code,
-            questioninfo: questioninfo,
-            attempted: attempted,
-            subtopic: subtopic,
-            link: link,
-          }),
-        }
-      );
+      const resp = await fetch(`${BASE_URL}/api/v1/adddsawork`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${getToken()}`,
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify({
+          question: question,
+          important: important,
+          logic: logic,
+          code: code,
+          questioninfo: questioninfo,
+          attempted: attempted,
+          subtopic: subtopic,
+          link: link,
+        }),
+      });
       if (resp.status === 401) {
         const suxxess = await refreshtoken();
         console.log(suxxess);
@@ -120,18 +118,15 @@ const Add = () => {
 
   const refreshtoken = async () => {
     try {
-      const resp = await fetch(
-        `https://springapp1402-awajgpegfsdkh2ce.canadacentral-01.azurewebsites.net/token/refresh`,
-        {
-          method: "POST",
-          headers: {
-            "Content-type": "application/json",
-          },
-          body: JSON.stringify({
-            refreshtoken: getrefershtoken(),
-          }),
-        }
-      );
+      const resp = await fetch(`${BASE_URL}/token/refresh`, {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify({
+          refreshtoken: getrefershtoken(),
+        }),
+      });
       if (resp.status === 200) {
         const data = await resp.json();
         saveToken(data.token);
@@ -147,23 +142,20 @@ const Add = () => {
   const handleaddother = async () => {
     setsubmitting(true);
     try {
-      const resp = await fetch(
-        `https://springapp1402-awajgpegfsdkh2ce.canadacentral-01.azurewebsites.net/api/v1/addotherwork`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${getToken()}`,
-            "Content-type": "application/json",
-          },
-          body: JSON.stringify({
-            question: question,
-            important: important,
-            logic: logic,
-            questioninfo: questioninfo,
-            topic: topic,
-          }),
-        }
-      );
+      const resp = await fetch(`${BASE_URL}/api/v1/addotherwork`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${getToken()}`,
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify({
+          question: question,
+          important: important,
+          logic: logic,
+          questioninfo: questioninfo,
+          topic: topic,
+        }),
+      });
       if (resp.status === 401) {
         const suxxess = await refreshtoken();
         console.log(suxxess);
@@ -197,26 +189,23 @@ const Add = () => {
   const handlechange = async () => {
     setsubmitting(true);
     try {
-      const resp = await fetch(
-        `https://springapp1402-awajgpegfsdkh2ce.canadacentral-01.azurewebsites.net/api/v1/modify`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${getToken()}`,
-            "Content-type": "application/json",
-          },
-          body: JSON.stringify({
-            question: question,
-            important: important,
-            logic: logic,
-            code: code,
-            questioninfo: questioninfo,
-            attempted: attempted,
-            subtopic: subtopic,
-            link: link,
-          }),
-        }
-      );
+      const resp = await fetch(`${BASE_URL}/api/v1/modify`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${getToken()}`,
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify({
+          question: question,
+          important: important,
+          logic: logic,
+          code: code,
+          questioninfo: questioninfo,
+          attempted: attempted,
+          subtopic: subtopic,
+          link: link,
+        }),
+      });
       if (resp.status === 401) {
         const suxxess = await refreshtoken();
         console.log(suxxess);

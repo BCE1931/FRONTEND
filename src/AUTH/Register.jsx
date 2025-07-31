@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { saverefershtoken, saveToken, saveusername } from "../UTILS/Local";
+import BASE_URL from "../UTILS/config";
 
 const Register = () => {
   const [username, setname] = useState("");
@@ -12,26 +13,23 @@ const Register = () => {
   const register = async (e) => {
     e.preventDefault();
     try {
-      const resp = await fetch(
-        `https://springapp1402-awajgpegfsdkh2ce.canadacentral-01.azurewebsites.net/oauth/register`,
-        {
-          method: "POST",
-          credentials: "include",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            username,
-            email,
-            password,
-            project: "trying jwt",
-          }),
-        }
-      );
+      const resp = await fetch(`${BASE_URL}/oauth/register`, {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          username,
+          email,
+          password,
+          project: "trying jwt",
+        }),
+      });
 
       if (!resp.ok) throw new Error("Registration failed");
       const res = await resp.json();
       if (res.exist === false) {
         const tokenResp = await fetch(
-          `https://springapp1402-awajgpegfsdkh2ce.canadacentral-01.azurewebsites.net/token/tokengen/${username}`,
+          `${BASE_URL}/token/tokengen/${username}`,
           {
             credentials: "include",
             headers: { "Content-Type": "application/json" },
@@ -62,7 +60,7 @@ const Register = () => {
 
         <div className="space-y-4 mb-6">
           <a
-            href="https://springapp1402-awajgpegfsdkh2ce.canadacentral-01.azurewebsites.net/oauth2/authorization/google"
+            href="${BASE_URL}/oauth2/authorization/google"
             className="flex items-center justify-center w-full border border-gray-300 rounded-lg py-2 hover:bg-gray-100 transition"
           >
             <img
@@ -74,7 +72,7 @@ const Register = () => {
           </a>
 
           <a
-            href="https://springapp1402-awajgpegfsdkh2ce.canadacentral-01.azurewebsites.net/oauth2/authorization/github"
+            href="${BASE_URL}/oauth2/authorization/github"
             className="flex items-center justify-center w-full border border-gray-300 rounded-lg py-2 hover:bg-gray-100 transition"
           >
             <img
