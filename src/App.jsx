@@ -5,7 +5,7 @@ import { ModeToggle } from "./components/mode-toggle";
 import Layout from "./PAGES/layout";
 import Card1 from "./PAGES/Card1";
 import Signup from "./PAGES/Signup";
-import IntroPage from "./PAGES/Intropage";
+import IntroPage from "./PAGES/IntroPage";
 import Hero from "./PAGES/Hero";
 import Quesdisply from "./PAGES/Quesdisply";
 import Otherdisply from "./PAGES/Otherdisply";
