@@ -73,7 +73,7 @@ const Hero = () => {
   };
 
   return (
-    <div className="min-h-screen w-full flex flex-col px-8 py-12 bg-gradient-to-br from-slate-900 via-gray-900 to-black text-white">
+    <div className="h-screen w-full flex flex-col px-8 py-12 bg-gradient-to-br from-slate-900 via-gray-900 to-black text-white overflow-y-auto scrollbar-hide">
       {/* Header */}
       <div className="flex justify-between items-center mb-12">
         <h1 className="text-3xl font-bold text-indigo-400 tracking-wide drop-shadow-md">
