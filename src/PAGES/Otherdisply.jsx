@@ -162,7 +162,7 @@ const Otherdisply = () => {
   }, [filteredQues.length]);
 
   return (
-    <div className="relative flex flex-col h-screen bg-gradient-to-br from-[#0f172a] via-[#020617] to-[#0a0a0a] text-white overflow-hidden">
+    <div className="relative flex flex-col min-h-[100dvh] sm:h-screen bg-gradient-to-br from-[#0f172a] via-[#020617] to-[#0a0a0a] text-white overflow-hidden">
       {/* 🔹 Header */}
       <header className="flex items-center justify-between px-6 py-4 border-b border-gray-800 bg-black/40 backdrop-blur-md">
         <h1 className="text-2xl font-semibold text-indigo-400 tracking-wide">
@@ -257,7 +257,7 @@ const Otherdisply = () => {
                   {ques.question || "No question text"}
                 </CardTitle>
               </CardHeader>
-              <CardContent className="flex flex-col h-[70vh] overflow-hidden">
+              <CardContent className="flex flex-col h-[65vh] sm:h-[70vh] overflow-hidden">
                 {/* Question Info */}
                 <ScrollArea className="flex-1 border-b border-gray-800 p-4 overflow-y-auto">
                   <p className="text-gray-300 text-sm whitespace-pre-wrap leading-relaxed">
