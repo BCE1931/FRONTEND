@@ -264,15 +264,18 @@ const Otherdisply = () => {
 
               <CardContent className="flex flex-col flex-1 overflow-hidden">
                 {/* Question Info */}
-                <ScrollArea className="flex-1 border-b border-gray-800 p-4">
+                <ScrollArea className="flex-1 border-b border-gray-800 p-4 overflow-y-auto">
+                  <h3 className="text-base font-medium text-indigo-400 mb-2 text-center sm:text-left">
+                    Question Details
+                  </h3>
                   <p className="text-gray-300 text-sm whitespace-pre-wrap leading-relaxed">
                     {ques.questioninfo || "No additional info available."}
                   </p>
                 </ScrollArea>
 
                 {/* Logic */}
-                <ScrollArea className="flex-1 p-4">
-                  <h3 className="text-md font-medium text-indigo-400 mb-2">
+                <ScrollArea className="flex-1 p-4 overflow-y-auto">
+                  <h3 className="text-base font-medium text-indigo-400 mb-2 text-center sm:text-left">
                     Logic
                   </h3>
                   <p className="text-gray-300 text-sm whitespace-pre-wrap leading-relaxed">
