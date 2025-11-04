@@ -204,9 +204,9 @@ const Otherdisply = () => {
       </header>
 
       {/* 🔹 Main Content */}
-      <main className="flex-1 flex justify-center items-center relative p-3 sm:p-6 h-full overflow-hidden">
+      <main className="flex-1 flex justify-center items-stretch relative p-3 sm:p-6 overflow-hidden h-full">
         {quesList.length === 0 ? (
-          <div className="flex flex-col items-center justify-center space-y-3">
+          <div className="flex flex-col items-center justify-center w-full h-full space-y-3">
             <Loader2 className="h-8 w-8 animate-spin text-indigo-400" />
             <p className="text-gray-300 text-sm">Fetching your records...</p>
           </div>
@@ -214,7 +214,7 @@ const Otherdisply = () => {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="w-full max-w-6xl flex flex-col sm:flex-row gap-6 h-[calc(100%-80px)]"
+            className="w-full max-w-6xl flex flex-col sm:flex-row gap-6 h-full"
           >
             {/* Sidebar */}
             <motion.aside
@@ -256,7 +256,7 @@ const Otherdisply = () => {
 
             {/* Question Card */}
             <Card className="flex-1 h-full bg-[#0b0f1a]/80 border border-gray-800 shadow-[0_0_25px_rgba(99,102,241,0.25)] rounded-3xl overflow-hidden backdrop-blur-xl text-white flex flex-col">
-              <CardHeader className="border-b border-gray-700 p-4">
+              <CardHeader className="border-b border-gray-700 p-5">
                 <CardTitle className="text-lg font-semibold text-indigo-300 text-center truncate">
                   {ques.question || "No question text"}
                 </CardTitle>
@@ -264,14 +264,14 @@ const Otherdisply = () => {
 
               <CardContent className="flex flex-col flex-1 overflow-hidden">
                 {/* Question Info */}
-                <ScrollArea className="flex-1 border-b border-gray-800 p-4 overflow-y-auto">
+                <ScrollArea className="flex-1 border-b border-gray-800 p-4">
                   <p className="text-gray-300 text-sm whitespace-pre-wrap leading-relaxed">
                     {ques.questioninfo || "No additional info available."}
                   </p>
                 </ScrollArea>
 
                 {/* Logic */}
-                <ScrollArea className="flex-1 p-4 overflow-y-auto">
+                <ScrollArea className="flex-1 p-4">
                   <h3 className="text-md font-medium text-indigo-400 mb-2">
                     Logic
                   </h3>
