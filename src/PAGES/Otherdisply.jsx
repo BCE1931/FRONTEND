@@ -256,29 +256,29 @@ const Otherdisply = () => {
 
             {/* Question Card */}
             <Card className="flex-1 h-full bg-[#0b0f1a]/80 border border-gray-800 shadow-[0_0_25px_rgba(99,102,241,0.25)] rounded-3xl overflow-hidden backdrop-blur-xl text-white flex flex-col">
-              <CardHeader className="border-b border-gray-700 p-5">
-                <CardTitle className="text-lg font-semibold text-indigo-300 text-center truncate">
+              <CardHeader className="border-b border-gray-700 px-3 py-2 sm:px-4 sm:py-3">
+                <CardTitle className="text-base sm:text-lg font-medium text-indigo-300 text-center leading-snug truncate">
                   {ques.question || "No question text"}
                 </CardTitle>
               </CardHeader>
 
               <CardContent className="flex flex-col flex-1 overflow-hidden">
                 {/* Question Info */}
-                <ScrollArea className="flex-1 border-b border-gray-800 p-4 overflow-y-auto">
-                  <h3 className="text-base font-medium text-indigo-400 mb-2 text-center sm:text-left">
-                    Question Details
+                <ScrollArea className="flex-1 border-b border-gray-800 p-3 overflow-y-auto overflow-x-hidden">
+                  <h3 className="text-sm font-semibold text-indigo-400 mb-2 text-center sm:text-left tracking-wide">
+                    Question
                   </h3>
-                  <p className="text-gray-300 text-sm whitespace-pre-wrap leading-relaxed">
+                  <p className="text-gray-300 text-sm whitespace-pre-wrap leading-relaxed break-words">
                     {ques.questioninfo || "No additional info available."}
                   </p>
                 </ScrollArea>
 
                 {/* Logic */}
-                <ScrollArea className="flex-1 p-4 overflow-y-auto">
-                  <h3 className="text-base font-medium text-indigo-400 mb-2 text-center sm:text-left">
+                <ScrollArea className="flex-1 p-3 overflow-y-auto overflow-x-hidden">
+                  <h3 className="text-sm font-semibold text-indigo-400 mb-2 text-center sm:text-left tracking-wide">
                     Logic
                   </h3>
-                  <p className="text-gray-300 text-sm whitespace-pre-wrap leading-relaxed">
+                  <p className="text-gray-300 text-sm whitespace-pre-wrap leading-relaxed break-words">
                     {ques.logic || "No logic added yet."}
                   </p>
                 </ScrollArea>
