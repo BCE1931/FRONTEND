@@ -128,25 +128,31 @@ const Otherdisply = () => {
   // ⬆️⬇️ Swipe gesture detection like Instagram stories
   useEffect(() => {
     let startY = 0;
-    let endY = 0;
+    let startTime = 0;
 
     const handleTouchStart = (e) => {
       startY = e.touches[0].clientY;
+      startTime = Date.now();
     };
 
     const handleTouchEnd = (e) => {
-      endY = e.changedTouches[0].clientY;
+      const endY = e.changedTouches[0].clientY;
       const diff = startY - endY;
+      const elapsed = Date.now() - startTime;
 
-      if (Math.abs(diff) > 50) {
-        // Swipe up
+      // Minimum distance & speed thresholds
+      const minDistance = 120; // stricter: must move 120px+
+      const maxTime = 500; // must happen within half a second (fast swipe)
+
+      // Only count as swipe if it's a quick, long gesture
+      if (Math.abs(diff) >= minDistance && elapsed <= maxTime) {
         if (diff > 0) {
+          // Swipe up → Next question
           setIndex((prev) =>
             prev < filteredQues.length - 1 ? prev + 1 : prev
           );
-        }
-        // Swipe down
-        else {
+        } else {
+          // Swipe down → Previous question
           setIndex((prev) => (prev > 0 ? prev - 1 : prev));
         }
       }
@@ -160,6 +166,7 @@ const Otherdisply = () => {
       window.removeEventListener("touchend", handleTouchEnd);
     };
   }, [filteredQues.length]);
+
   return (
     <div className="relative flex flex-col h-[100dvh] sm:h-screen bg-gradient-to-br from-[#0f172a] via-[#020617] to-[#0a0a0a] text-white overflow-x-hidden overflow-y-auto">
       {/* 🔹 Header */}
