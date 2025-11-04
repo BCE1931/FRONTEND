@@ -160,11 +160,10 @@ const Otherdisply = () => {
       window.removeEventListener("touchend", handleTouchEnd);
     };
   }, [filteredQues.length]);
-
   return (
-    <div className="relative flex flex-col min-h-[100dvh] sm:h-screen bg-gradient-to-br from-[#0f172a] via-[#020617] to-[#0a0a0a] text-white overflow-hidden">
+    <div className="relative flex flex-col h-[100dvh] sm:h-screen bg-gradient-to-br from-[#0f172a] via-[#020617] to-[#0a0a0a] text-white overflow-x-hidden overflow-y-auto">
       {/* 🔹 Header */}
-      <header className="flex items-center justify-between px-6 py-4 border-b border-gray-800 bg-black/40 backdrop-blur-md">
+      <header className="flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-800 bg-black/60 backdrop-blur-lg z-30 relative">
         <h1 className="text-2xl font-semibold text-indigo-400 tracking-wide">
           📘 {topic}
         </h1>
@@ -198,7 +197,7 @@ const Otherdisply = () => {
       </header>
 
       {/* 🔹 Main Content */}
-      <main className="flex-1 flex justify-center items-center relative p-4 sm:p-8">
+      <main className="flex-1 flex justify-center items-start sm:items-center relative p-3 sm:p-8 overflow-y-auto">
         {quesList.length === 0 ? (
           <div className="flex flex-col items-center justify-center space-y-3">
             <Loader2 className="h-8 w-8 animate-spin text-indigo-400" />
@@ -208,22 +207,21 @@ const Otherdisply = () => {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="w-full max-w-4xl flex flex-col sm:flex-row gap-6"
+            className="w-full max-w-4xl flex flex-col sm:flex-row gap-6 relative z-10"
           >
             {/* Sidebar */}
-            {/* Sidebar — moved to extreme left and made slightly taller */}
             <motion.aside
               initial={{ x: -60, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               transition={{ duration: 0.5 }}
-              className={`absolute left-0 top-0 bottom-0 bg-[#0b1121]/90 backdrop-blur-xl border border-gray-800 rounded-r-2xl p-4 w-[270px] sm:w-[280px] shadow-[0_0_20px_rgba(99,102,241,0.15)] transition-all duration-300 ${
+              className={`fixed sm:absolute left-0 top-0 bottom-0 h-[100dvh] sm:h-auto bg-[#0b1121]/95 backdrop-blur-xl border border-gray-800 rounded-r-2xl p-4 w-[250px] sm:w-[280px] shadow-[0_0_20px_rgba(99,102,241,0.15)] transition-all duration-300 z-20 ${
                 showList ? "block" : "hidden sm:block"
               }`}
             >
               <h2 className="text-lg font-semibold text-indigo-400 mb-3 flex items-center gap-2">
                 🗂️ Questions
               </h2>
-              <ScrollArea className="h-[78vh] pr-2 space-y-2">
+              <ScrollArea className="h-[80vh] pr-2 space-y-2">
                 {filteredQues.map((q, i) => (
                   <div
                     key={i}
@@ -250,14 +248,13 @@ const Otherdisply = () => {
             </motion.aside>
 
             {/* Question Card */}
-            {/* Question Card — reduced width */}
-            <Card className="w-[60%] bg-[#0b0f1a]/80 border border-gray-800 shadow-[0_0_25px_rgba(99,102,241,0.25)] rounded-3xl overflow-hidden backdrop-blur-xl text-white mx-auto">
+            <Card className="w-full sm:w-[60%] bg-[#0b0f1a]/80 border border-gray-800 shadow-[0_0_25px_rgba(99,102,241,0.25)] rounded-3xl overflow-hidden backdrop-blur-xl text-white mx-auto">
               <CardHeader className="border-b border-gray-700 p-5">
                 <CardTitle className="text-lg font-semibold text-indigo-300 text-center">
                   {ques.question || "No question text"}
                 </CardTitle>
               </CardHeader>
-              <CardContent className="flex flex-col h-[65vh] sm:h-[70vh] overflow-hidden">
+              <CardContent className="flex flex-col h-auto sm:h-[70vh] max-h-[80dvh] overflow-y-auto">
                 {/* Question Info */}
                 <ScrollArea className="flex-1 border-b border-gray-800 p-4 overflow-y-auto">
                   <p className="text-gray-300 text-sm whitespace-pre-wrap leading-relaxed">
