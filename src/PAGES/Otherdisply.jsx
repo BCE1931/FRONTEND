@@ -22,13 +22,14 @@ const Otherdisply = () => {
   const [showList, setShowList] = useState(false);
   const [selectedDate, setSelectedDate] = useState("All");
   const [days, setdays] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const navigate = useNavigate();
   const location = useLocation();
   const topic = location.state?.topic;
 
   useEffect(() => {
-    console.log(topic);
+    console.log("Selected Topic:", topic);
   }, []);
 
   if (!topic) {
@@ -65,8 +66,15 @@ const Otherdisply = () => {
     }
   };
 
+  // ✅ Helper: navigate to /add manually
+  const handlenavigate = () => {
+    navigate("/add", { state: { topic: topic, changes: false, ques: "" } });
+  };
+
+  // ✅ Fetch questions
   const getworkquestions = async () => {
     try {
+      setLoading(true);
       const resp = await fetch(
         `${BASE_URL}/api/v1/getwork/${encodeURIComponent(topic)}`,
         {
@@ -76,19 +84,32 @@ const Otherdisply = () => {
           },
         }
       );
+
       if (resp.status === 401) {
         const success = await refreshtoken();
         if (success) return getworkquestions();
         toast.error("Unable to refresh token.");
         return navigate("/");
       }
+
       const data = await resp.json();
+
+      if (!data || data.length === 0) {
+        setQuesList([]);
+        toast.info(`No records found for ${topic}.`);
+        setLoading(false);
+        return;
+      }
+
       const uniqueDates = [...new Set(data.map((item) => item.date))];
       setdays(uniqueDates);
       setQuesList(data);
       setFilteredQues(data);
-    } catch {
-      console.log("Error fetching questions");
+    } catch (error) {
+      console.log("Error fetching questions", error);
+      toast.error("Error fetching questions.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -125,7 +146,7 @@ const Otherdisply = () => {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [filteredQues.length]);
 
-  // ⬆️⬇️ Swipe gesture detection like Instagram stories
+  // ⬆️⬇️ Swipe gesture detection
   useEffect(() => {
     let startY = 0;
     let startTime = 0;
@@ -140,19 +161,15 @@ const Otherdisply = () => {
       const diff = startY - endY;
       const elapsed = Date.now() - startTime;
 
-      // Minimum distance & speed thresholds
-      const minDistance = 120; // stricter: must move 120px+
-      const maxTime = 500; // must happen within half a second (fast swipe)
+      const minDistance = 120;
+      const maxTime = 500;
 
-      // Only count as swipe if it's a quick, long gesture
       if (Math.abs(diff) >= minDistance && elapsed <= maxTime) {
         if (diff > 0) {
-          // Swipe up → Next question
           setIndex((prev) =>
             prev < filteredQues.length - 1 ? prev + 1 : prev
           );
         } else {
-          // Swipe down → Previous question
           setIndex((prev) => (prev > 0 ? prev - 1 : prev));
         }
       }
@@ -205,10 +222,23 @@ const Otherdisply = () => {
 
       {/* 🔹 Main Content */}
       <main className="flex-1 flex justify-center items-stretch relative p-3 sm:p-6 overflow-hidden h-full">
-        {quesList.length === 0 ? (
+        {loading ? (
           <div className="flex flex-col items-center justify-center w-full h-full space-y-3">
             <Loader2 className="h-8 w-8 animate-spin text-indigo-400" />
             <p className="text-gray-300 text-sm">Fetching your records...</p>
+          </div>
+        ) : quesList.length === 0 ? (
+          <div className="flex flex-col items-center justify-center w-full h-full text-center space-y-4">
+            <p className="text-gray-300 text-lg">
+              No records found for{" "}
+              <span className="text-indigo-400">{topic}</span>.
+            </p>
+            <Button
+              onClick={handlenavigate}
+              className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg px-6 py-2 shadow-md transition-all duration-200"
+            >
+              ➕ Add New Record
+            </Button>
           </div>
         ) : (
           <motion.div
@@ -263,7 +293,6 @@ const Otherdisply = () => {
               </CardHeader>
 
               <CardContent className="flex flex-col flex-1 overflow-hidden">
-                {/* Question Info */}
                 <ScrollArea className="flex-1 border-b border-gray-800 p-3 overflow-y-auto overflow-x-hidden">
                   <h3 className="text-sm font-semibold text-indigo-400 mb-2 text-center sm:text-left tracking-wide">
                     Question
@@ -273,7 +302,6 @@ const Otherdisply = () => {
                   </p>
                 </ScrollArea>
 
-                {/* Logic */}
                 <ScrollArea className="flex-1 p-3 overflow-y-auto overflow-x-hidden">
                   <h3 className="text-sm font-semibold text-indigo-400 mb-2 text-center sm:text-left tracking-wide">
                     Logic
@@ -284,7 +312,6 @@ const Otherdisply = () => {
                 </ScrollArea>
               </CardContent>
 
-              {/* Floating Action */}
               <div className="absolute right-5 bottom-5 flex gap-3">
                 <Button
                   onClick={toggleModify}

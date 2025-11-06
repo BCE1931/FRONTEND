@@ -316,6 +316,10 @@ const Quesdisply = () => {
     };
   }, [filteredQues.length]);
 
+  const handlenavigate = () => {
+    navigate("/add", { state: { topic: "DSA", changes: false, ques: "" } });
+  };
+
   return (
     <div className="relative flex h-screen w-full bg-gradient-to-br from-[#0f172a] via-[#020617] to-[#0a0a0a] text-white overflow-hidden">
       {/* 🔄 Loading State */}
@@ -339,7 +343,7 @@ const Quesdisply = () => {
             You haven’t added any work yet. Let’s start now!
           </p>
           <Button
-            onClick={() => navigate("/add")}
+            onClick={() => handlenavigate()}
             className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-6 py-2 rounded-xl shadow-lg"
           >
             ➕ Add New Work
