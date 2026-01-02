@@ -198,6 +198,7 @@
 import React, { useRef } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import BASE_URL from "../UTILS/config";
 
 const Signup = () => {
   const emailref = useRef(null);
@@ -217,14 +218,14 @@ const Signup = () => {
       username: username,
     };
     axios
-      .post("https://myserverapp.tech/authentication/register", data, {
+      .post(`${BASE_URL}/authentication/register`, data, {
         withCredentials: true,
       })
       .then((response) => {
         console.log(response.data);
         if (response.data.msg === "user registered successfully") {
           localStorage.setItem("token", response.data.token);
-          localStorage.setItem("refrshtoken", response.data.refreshtoken);
+          localStorage.setItem("refreshtoken", response.data.refreshtoken);
           navigate("/hero");
         }
       })
@@ -241,8 +242,7 @@ const Signup = () => {
       {/* GOOGLE LOGIN */}
       <button
         onClick={() => {
-          window.location.href =
-            "https://myserverapp.tech/oauth2/authorization/google";
+          window.location.href = `${BASE_URL}/oauth2/authorization/google`;
         }}
         className="flex items-center justify-center w-full border border-gray-300 rounded-lg py-2 hover:bg-gray-100 transition"
       >
