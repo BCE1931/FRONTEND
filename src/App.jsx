@@ -13,6 +13,7 @@ import Selectadd from "./PAGES/Selectadd";
 import Add from "./PAGES/Add";
 
 import { Toaster } from "@/components/ui/sonner";
+import Resetpwd from "./PAGES/Resetpwd";
 
 const App = () => {
   const PublicRoute = ({ element }) => {
@@ -62,6 +63,11 @@ const App = () => {
               <Route
                 path="/"
                 element={<PublicRoute element={<IntroPage />} />}
+              />
+
+              <Route
+                path="/reset-password"
+                element={<PublicRoute element={<Resetpwd />} />}
               />
               <Route
                 path="/signin"
