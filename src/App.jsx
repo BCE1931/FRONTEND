@@ -16,7 +16,7 @@ import { Toaster } from "@/components/ui/sonner";
 
 const App = () => {
   const PublicRoute = ({ element }) => {
-    return localStorage.getItem("username") ? (
+    return localStorage.getItem("token") ? (
       <Navigate to="/hero" replace />
     ) : (
       element
@@ -24,7 +24,7 @@ const App = () => {
   };
 
   const ProtectedRoute = ({ element }) => {
-    return localStorage.getItem("username") ? (
+    return localStorage.getItem("token") ? (
       element
     ) : (
       <Navigate to="/signin" replace />
