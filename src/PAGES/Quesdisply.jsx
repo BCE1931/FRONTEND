@@ -62,35 +62,37 @@ const Quesdisply = () => {
   const toggleDates = () => {
     setShowDates(!showDates);
   };
-  const getquestions = async () => {
-    try {
-      setisFetching(true);
-      const resp = await fetch(`${BASE_URL}/api/v1/questions`, {
-        headers: {
-          Authorization: `Bearer ${getToken()}`,
-          "Content-type": "application/json",
-        },
-      });
-      if (resp.status === 401) {
-        const suxxess = await refreshtoken();
-        if (suxxess) {
-          return getquestions();
-        } else {
-          toast.error("Unable to refresh token.");
-          navigate("/");
-        }
-      }
-      if (!resp.ok) {
-        console.log("Error in fetching questions");
-      }
-      const data = await resp.json();
-      setQuesList(data);
-      setFilteredQues(data);
-    } catch (err) {
-      console.log("Error connecting to backend while fetching questions");
-    } finally {
-      setisFetching(false);
-    }
+  const getquestions = () => {
+    // try {
+    //   setisFetching(true);
+    //   const resp = await fetch(`${BASE_URL}/api/v1/questions`, { //hlps to fetch questions
+    //     headers: {
+    //       Authorization: `Bearer ${getToken()}`,
+    //       "Content-type": "application/json",
+    //     },
+    //   });
+    //   if (resp.status === 401) {
+    //     const suxxess = await refreshtoken();
+    //     if (suxxess) {
+    //       return getquestions();
+    //     } else {
+    //       toast.error("Unable to refresh token.");
+    //       navigate("/");
+    //     }
+    //   }
+    //   if (!resp.ok) {
+    //     console.log("Error in fetching questions");
+    //   }
+    //   const data = await resp.json();
+    //   setQuesList(data);
+    //   setFilteredQues(data);
+    // } catch (err) {
+    //   console.log("Error connecting to backend while fetching questions");
+    // } finally {
+    //   setisFetching(false);
+    // }
+
+    console.log("tying to fetch question");
   };
 
   const refreshtoken = async () => {
@@ -119,6 +121,7 @@ const Quesdisply = () => {
   const ques = filteredQues[index] || {};
 
   const getworkquestions = async () => {
+    // MAIN FUNCTION TO GET ONLY DSA QUESTIONS
     try {
       setisFetching(true);
       const resp = await fetch(`${BASE_URL}/api/v1/getdsawork`, {
@@ -154,6 +157,8 @@ const Quesdisply = () => {
   };
 
   const getworktopics = async () => {
+    //GET SIDE BAR WORK TOPIC
+    //GET SIDE BAR WORK TOPIC
     try {
       const topic = "DSA";
       const resp = await fetch(`${BASE_URL}/api/v1/topics/${topic}`, {
