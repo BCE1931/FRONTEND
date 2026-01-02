@@ -225,7 +225,7 @@ const Signup = () => {
         if (response.data.msg === "user registered successfully") {
           localStorage.setItem("token", response.data.token);
           localStorage.setItem("refrshtoken", response.data.refreshtoken);
-          navigate("/home");
+          navigate("/hero");
         }
       })
       .catch((err) => {

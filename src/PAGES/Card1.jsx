@@ -224,7 +224,7 @@ const Card1 = () => {
         if (response.data.msg === "User logged in successfully") {
           localStorage.setItem("token", response.data.token);
           localStorage.setItem("refrshtoken", response.data.refreshtoken);
-          navigate("/home");
+          navigate("/hero");
         }
       })
       .catch((err) => {
