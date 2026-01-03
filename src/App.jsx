@@ -11,7 +11,7 @@ import Quesdisply from "./PAGES/Quesdisply";
 import Otherdisply from "./PAGES/Otherdisply";
 import Selectadd from "./PAGES/Selectadd";
 import Add from "./PAGES/Add";
-
+import Middle from "./PAGES/Middle";
 import { Toaster } from "@/components/ui/sonner";
 import Resetpwd from "./PAGES/Resetpwd";
 
