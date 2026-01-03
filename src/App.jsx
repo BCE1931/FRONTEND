@@ -112,6 +112,8 @@ const App = () => {
               />
 
               <Route path="*" element={<Navigate to="/signin" replace />} />
+
+              <Route path="/middle" element={<Middle />} />
             </Routes>
           </div>
         )}
