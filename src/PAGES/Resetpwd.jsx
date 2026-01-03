@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { MagicCard } from "@/components/ui/magic-card";
+import BASE_URL from "../UTILS/config";
 
 const Resetpwd = () => {
   const navigate = useNavigate();
@@ -34,14 +35,11 @@ const Resetpwd = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await fetch(
-        "https://myserverapp.tech/otp/pwd-reset-otp-req",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email }),
-        }
-      );
+      const res = await fetch(`${BASE_URL}/otp/pwd-reset-otp-req`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
       const data = await res.text();
       if (res.ok) {
         localStorage.setItem("resetEmail", email);
@@ -61,17 +59,14 @@ const Resetpwd = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await fetch(
-        "https://myserverapp.tech/otp/pwd-otp-req-validation",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            email: localStorage.getItem("resetEmail"),
-            otp,
-          }),
-        }
-      );
+      const res = await fetch(`${BASE_URL}/otp/pwd-otp-req-validation`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: localStorage.getItem("resetEmail"),
+          otp,
+        }),
+      });
       const data = await res.text();
       if (res.ok) {
         localStorage.setItem("otpVerified", "true");
@@ -90,7 +85,7 @@ const Resetpwd = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await fetch("https://myserverapp.tech/otp/pwd-reset", {
+      const res = await fetch(`${BASE_URL}/otp/pwd-reset`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -102,7 +97,7 @@ const Resetpwd = () => {
       if (res.ok) {
         localStorage.clear();
         setMessage("Password reset successful");
-        navigate("/");
+        navigate("/signin");
       } else setMessage(data);
     } catch {
       setMessage("Server error");

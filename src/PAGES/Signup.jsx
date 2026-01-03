@@ -42,7 +42,7 @@ const Signup = () => {
     setLoading(true);
 
     try {
-      const res = await fetch("https://myserverapp.tech/otp/signup-otp-req", {
+      const res = await fetch(`${BASE_URL}/otp/signup-otp-req`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, username, password }),
@@ -71,17 +71,14 @@ const Signup = () => {
     setLoading(true);
 
     try {
-      const res = await fetch(
-        "https://myserverapp.tech/otp/signup-otp-validation",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            email: localStorage.getItem("email"),
-            otp,
-          }),
-        }
-      );
+      const res = await fetch(`${BASE_URL}/otp/signup-otp-validation`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: localStorage.getItem("email"),
+          otp,
+        }),
+      });
 
       const data = await res.json();
 
