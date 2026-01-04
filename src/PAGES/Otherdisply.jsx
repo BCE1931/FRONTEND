@@ -8,25 +8,62 @@ import {
 import { toast } from "sonner";
 import { useLocation, useNavigate } from "react-router-dom";
 import BASE_URL from "../UTILS/config";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardTitle, CardHeader, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
+import { Monitor, Smartphone, Loader2 } from "lucide-react"; // Updated icons
 import { motion } from "framer-motion";
-import { Loader2 } from "lucide-react";
+
+// Sub-components
+import WorkHeader from "./QuesDisplay/WorkHeader";
+import EmptyWorkState from "./QuesDisplay/EmptyWorkState";
+import LoadingSpinner from "./QuesDisplay/LoadingSpinner";
+import DesktopStack from "./QuesDisplay/DesktopStack";
 
 const Otherdisply = () => {
   const [quesList, setQuesList] = useState([]);
   const [filteredQues, setFilteredQues] = useState([]);
   const [index, setIndex] = useState(0);
-  const [showList, setShowList] = useState(false);
   const [selectedDate, setSelectedDate] = useState("All");
   const [days, setdays] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // --- Code 1 Specific State ---
+  const [showList, setShowList] = useState(false);
+
+  // --- Code 2 Logic: Device & View State ---
+  const [isDesktop, setIsDesktop] = useState(window.innerWidth > 768);
+  const [viewMode, setViewMode] = useState("carousel"); // 'carousel' or 'detailed'
+
   const navigate = useNavigate();
   const location = useLocation();
   const topic = location.state?.topic;
+
+  // --- Code 2 Logic: Device Detection ---
+  useEffect(() => {
+    const handleResize = () => {
+      const desktop = window.innerWidth > 768;
+      setIsDesktop(desktop);
+      // Logic: If mobile, FORCE detailed view.
+      // If desktop, respect user choice (defaults to carousel).
+      if (!desktop) {
+        setViewMode("detailed");
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    handleResize(); // Initial check
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  // --- Code 2 Logic: Toggle Function ---
+  const toggleViewMode = () => {
+    if (isDesktop) {
+      setViewMode((prev) => (prev === "carousel" ? "detailed" : "carousel"));
+    }
+  };
 
   useEffect(() => {
     console.log("Selected Topic:", topic);
@@ -66,12 +103,10 @@ const Otherdisply = () => {
     }
   };
 
-  // ✅ Helper: navigate to /add manually
   const handlenavigate = () => {
     navigate("/add", { state: { topic: topic, changes: false, ques: "" } });
   };
 
-  // ✅ Fetch questions
   const getworkquestions = async () => {
     try {
       setLoading(true);
@@ -123,30 +158,26 @@ const Otherdisply = () => {
       date === "All" ? quesList : quesList.filter((q) => q.date === date);
     setFilteredQues(filtered);
     setIndex(0);
-    setShowList(true);
+    // On mobile, show list after filtering to let user pick
+    if (!isDesktop) setShowList(true);
   };
 
-  const ques = filteredQues[index] || {};
+  const toggleModify = (specificQues = null) => {
+    const targetQues =
+      specificQues && specificQues._id ? specificQues : filteredQues[index];
 
-  const toggleModify = () => {
-    navigate("/add", { state: { topic: topic, change: true, ques: ques } });
+    if (targetQues) {
+      navigate("/add", {
+        state: { topic: topic, change: true, ques: targetQues },
+      });
+    }
   };
 
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (e.key === "ArrowUp") {
-        setIndex((prev) => (prev > 0 ? prev - 1 : prev));
-      }
-      if (e.key === "ArrowDown") {
-        setIndex((prev) => (prev < filteredQues.length - 1 ? prev + 1 : prev));
-      }
-    };
+  const toggleAttempted = (specificQues) => {
+    toast.info("Attempted status toggle clicked");
+  };
 
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [filteredQues.length]);
-
-  // ⬆️⬇️ Swipe gesture detection
+  // --- Logic: Swipe Navigation (Unified) ---
   useEffect(() => {
     let startY = 0;
     let startTime = 0;
@@ -157,10 +188,11 @@ const Otherdisply = () => {
     };
 
     const handleTouchEnd = (e) => {
+      // Only enable vertical swipe nav in Desktop Stack mode or Question View
+      // We don't want to mess up scrolling in the list view
       const endY = e.changedTouches[0].clientY;
       const diff = startY - endY;
       const elapsed = Date.now() - startTime;
-
       const minDistance = 120;
       const maxTime = 500;
 
@@ -184,144 +216,210 @@ const Otherdisply = () => {
     };
   }, [filteredQues.length]);
 
+  // --- Logic: Keyboard Navigation (Unified) ---
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === "ArrowUp") {
+        setIndex((prev) => (prev > 0 ? prev - 1 : prev));
+      }
+      if (e.key === "ArrowDown") {
+        setIndex((prev) => (prev < filteredQues.length - 1 ? prev + 1 : prev));
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [filteredQues.length]);
+
+  // Define current question for the Code 1 view logic
+  const ques = filteredQues[index] || {};
+
   return (
     <div className="relative flex flex-col h-[100dvh] sm:h-screen bg-gradient-to-br from-[#0f172a] via-[#020617] to-[#0a0a0a] text-white overflow-hidden">
-      {/* 🔹 Header */}
-      <header className="flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-800 bg-black/60 backdrop-blur-lg z-30">
-        <h1 className="text-2xl font-semibold text-indigo-400 tracking-wide truncate">
-          📘 {topic}
-        </h1>
-        <div className="flex space-x-2 overflow-x-auto scrollbar-thin">
+      {/* --- Code 2 Logic: Toggle Button (Desktop Only) --- */}
+      {isDesktop && !loading && filteredQues.length > 0 && (
+        <div className="fixed top-20 right-4 z-50">
           <Button
-            onClick={() => filterByDate("All")}
-            variant={selectedDate === "All" ? "default" : "outline"}
-            className={`text-sm px-4 py-1 ${
-              selectedDate === "All"
-                ? "bg-indigo-600 hover:bg-indigo-700 text-white"
-                : "border-gray-700 text-gray-300 hover:text-white"
-            }`}
+            onClick={toggleViewMode}
+            variant="outline"
+            className="bg-gray-900/80 backdrop-blur border-gray-700 text-indigo-400 hover:bg-indigo-900/30 flex gap-2 items-center rounded-full px-4"
           >
-            All
+            {viewMode === "carousel" ? (
+              <>
+                <Smartphone size={16} /> Switch to Split View
+              </>
+            ) : (
+              <>
+                <Monitor size={16} /> Switch to Stack View
+              </>
+            )}
           </Button>
-          {days.map((date, i) => (
-            <Button
-              key={i}
-              onClick={() => filterByDate(date)}
-              variant={selectedDate === date ? "default" : "outline"}
-              className={`text-sm px-4 py-1 ${
-                selectedDate === date
-                  ? "bg-indigo-600 hover:bg-indigo-700 text-white"
-                  : "border-gray-700 text-gray-300 hover:text-white"
-              }`}
-            >
-              {date}
-            </Button>
-          ))}
         </div>
-      </header>
+      )}
 
-      {/* 🔹 Main Content */}
-      <main className="flex-1 flex justify-center items-stretch relative p-3 sm:p-6 overflow-hidden h-full">
+      {/* Header */}
+      <WorkHeader
+        topic={topic}
+        days={days}
+        selectedDate={selectedDate}
+        filterByDate={filterByDate}
+      />
+
+      {/* Main Content Area */}
+      <main className="flex-1 flex justify-center items-stretch relative p-0 overflow-hidden h-full">
         {loading ? (
-          <div className="flex flex-col items-center justify-center w-full h-full space-y-3">
-            <Loader2 className="h-8 w-8 animate-spin text-indigo-400" />
-            <p className="text-gray-300 text-sm">Fetching your records...</p>
+          <div className="flex items-center justify-center h-full w-full">
+            <LoadingSpinner />
           </div>
-        ) : quesList.length === 0 ? (
-          <div className="flex flex-col items-center justify-center w-full h-full text-center space-y-4">
-            <p className="text-gray-300 text-lg">
-              No records found for{" "}
-              <span className="text-indigo-400">{topic}</span>.
-            </p>
-            <Button
-              onClick={handlenavigate}
-              className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg px-6 py-2 shadow-md transition-all duration-200"
-            >
-              ➕ Add New Record
-            </Button>
+        ) : filteredQues.length === 0 ? (
+          <div className="flex items-center justify-center h-full w-full p-6">
+            <EmptyWorkState onNavigate={handlenavigate} />
           </div>
         ) : (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="w-full max-w-6xl flex flex-col sm:flex-row gap-6 h-full"
-          >
-            {/* Sidebar */}
-            <motion.aside
-              initial={{ x: -60, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              transition={{ duration: 0.5 }}
-              className={`h-full bg-[#0b1121]/95 backdrop-blur-xl border border-gray-800 rounded-2xl p-4 w-[260px] sm:w-[280px] shadow-[0_0_20px_rgba(99,102,241,0.15)] transition-all duration-300 z-20 ${
-                showList ? "block" : "hidden sm:block"
-              }`}
-            >
-              <h2 className="text-lg font-semibold text-indigo-400 mb-3 flex items-center gap-2">
-                🗂️ Questions
-              </h2>
-              <ScrollArea className="h-[calc(100%-2rem)] pr-2 space-y-2">
-                {filteredQues.map((q, i) => (
-                  <div
-                    key={i}
-                    onClick={() => {
-                      setIndex(i);
-                      setShowList(false);
-                    }}
-                    className={`cursor-pointer p-3 rounded-lg text-sm transition-all ${
-                      i === index
-                        ? "bg-indigo-600/80 text-white font-semibold"
-                        : "hover:bg-gray-800 text-gray-300"
-                    }`}
-                  >
-                    <div className="flex justify-between items-center">
-                      <span className="truncate">{q.question}</span>
-                      <div className="flex gap-1">
-                        {q.important && <Badge>⭐</Badge>}
-                        {q.attempted && <Badge variant="secondary">✅</Badge>}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </ScrollArea>
-            </motion.aside>
-
-            {/* Question Card */}
-            <Card className="flex-1 h-full bg-[#0b0f1a]/80 border border-gray-800 shadow-[0_0_25px_rgba(99,102,241,0.25)] rounded-3xl overflow-hidden backdrop-blur-xl text-white flex flex-col">
-              <CardHeader className="border-b border-gray-700 px-3 py-2 sm:px-4 sm:py-3">
-                <CardTitle className="text-base sm:text-lg font-medium text-indigo-300 text-center leading-snug truncate">
-                  {ques.question || "No question text"}
-                </CardTitle>
-              </CardHeader>
-
-              <CardContent className="flex flex-col flex-1 overflow-hidden">
-                <ScrollArea className="flex-1 border-b border-gray-800 p-3 overflow-y-auto overflow-x-hidden">
-                  <h3 className="text-sm font-semibold text-indigo-400 mb-2 text-center sm:text-left tracking-wide">
-                    Question
-                  </h3>
-                  <p className="text-gray-300 text-sm whitespace-pre-wrap leading-relaxed break-words">
-                    {ques.questioninfo || "No additional info available."}
-                  </p>
-                </ScrollArea>
-
-                <ScrollArea className="flex-1 p-3 overflow-y-auto overflow-x-hidden">
-                  <h3 className="text-sm font-semibold text-indigo-400 mb-2 text-center sm:text-left tracking-wide">
-                    Logic
-                  </h3>
-                  <p className="text-gray-300 text-sm whitespace-pre-wrap leading-relaxed break-words">
-                    {ques.logic || "No logic added yet."}
-                  </p>
-                </ScrollArea>
-              </CardContent>
-
-              <div className="absolute right-5 bottom-5 flex gap-3">
-                <Button
-                  onClick={toggleModify}
-                  className="bg-yellow-500 hover:bg-yellow-600 rounded-full p-3 shadow-lg"
+          <>
+            {/* --- VIEW MODE 1: DESKTOP STACK (CAROUSEL) --- */}
+            {viewMode === "carousel" && isDesktop ? (
+              <DesktopStack
+                questions={filteredQues}
+                toggleModify={toggleModify}
+                toggleAttempted={toggleAttempted}
+                index={index}
+              />
+            ) : (
+              /* --- VIEW MODE 2: SPLIT/LIST VIEW (For Mobile & Desktop Detailed) --- */
+              <div className="w-full max-w-6xl flex flex-col sm:flex-row gap-6 h-full p-3 sm:p-6">
+                {/* Sidebar */}
+                <motion.aside
+                  initial={{ x: -60, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  transition={{ duration: 0.5 }}
+                  className={`h-full bg-[#0b1121]/95 backdrop-blur-xl border border-gray-800 rounded-2xl p-4 w-[260px] sm:w-[280px] shadow-[0_0_20px_rgba(99,102,241,0.15)] transition-all duration-300 z-20 ${
+                    showList
+                      ? "block fixed left-0 top-0 h-full w-[85%] z-50 m-0 rounded-none sm:rounded-2xl sm:relative sm:w-[280px]"
+                      : "hidden sm:block"
+                  }`}
                 >
-                  ✏️
-                </Button>
+                  <div className="flex justify-between items-center mb-3">
+                    <h2 className="text-lg font-semibold text-indigo-400 flex items-center gap-2">
+                      🗂️ Questions
+                    </h2>
+                    {/* Close button for mobile sidebar */}
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="sm:hidden text-gray-400 hover:text-white"
+                      onClick={() => setShowList(false)}
+                    >
+                      ✕
+                    </Button>
+                  </div>
+
+                  <ScrollArea className="h-[calc(100%-3rem)] pr-2 space-y-2">
+                    {filteredQues.map((q, i) => (
+                      <div
+                        key={i}
+                        onClick={() => {
+                          setIndex(i);
+                          setShowList(false);
+                        }}
+                        className={`cursor-pointer p-3 rounded-lg text-sm transition-all border border-transparent ${
+                          i === index
+                            ? "bg-indigo-600/80 text-white font-semibold shadow-md border-indigo-500/50"
+                            : "hover:bg-gray-800 text-gray-300 hover:border-gray-700"
+                        }`}
+                      >
+                        <div className="flex justify-between items-center gap-2">
+                          <span className="truncate flex-1">{q.question}</span>
+                          <div className="flex gap-1 shrink-0">
+                            {q.important && (
+                              <Badge
+                                variant="outline"
+                                className="border-yellow-500/50 text-yellow-500 text-[10px] px-1"
+                              >
+                                ⭐
+                              </Badge>
+                            )}
+                            {q.attempted && (
+                              <Badge
+                                variant="secondary"
+                                className="bg-green-500/20 text-green-400 text-[10px] px-1"
+                              >
+                                ✅
+                              </Badge>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </ScrollArea>
+                </motion.aside>
+
+                {/* Overlay for mobile sidebar */}
+                {showList && (
+                  <div
+                    className="fixed inset-0 bg-black/60 z-40 sm:hidden backdrop-blur-sm"
+                    onClick={() => setShowList(false)}
+                  />
+                )}
+
+                {/* Question Card */}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="flex-1 h-full flex flex-col relative"
+                >
+                  {/* Mobile: Button to open Sidebar */}
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="sm:hidden mb-2 self-start border-gray-700 bg-gray-900/50 text-indigo-300 backdrop-blur-md"
+                    onClick={() => setShowList(true)}
+                  >
+                    📂 Select Question
+                  </Button>
+
+                  <Card className="flex-1 h-full bg-[#0b0f1a]/80 border border-gray-800 shadow-[0_0_25px_rgba(99,102,241,0.25)] rounded-3xl overflow-hidden backdrop-blur-xl text-white flex flex-col">
+                    <CardHeader className="border-b border-gray-700 px-3 py-2 sm:px-4 sm:py-3 bg-black/20">
+                      <CardTitle className="text-base sm:text-lg font-medium text-indigo-300 text-center leading-snug truncate">
+                        {ques.question || "No question text"}
+                      </CardTitle>
+                    </CardHeader>
+
+                    <CardContent className="flex flex-col flex-1 overflow-hidden p-0">
+                      {/* Top Half: Question Info */}
+                      <ScrollArea className="flex-1 border-b border-gray-800 p-4 overflow-y-auto overflow-x-hidden">
+                        <h3 className="text-sm font-semibold text-indigo-400 mb-2 flex items-center gap-2">
+                          📌 Question
+                        </h3>
+                        <p className="text-gray-300 text-sm whitespace-pre-wrap leading-relaxed break-words">
+                          {ques.questioninfo || "No additional info available."}
+                        </p>
+                      </ScrollArea>
+
+                      {/* Bottom Half: Logic */}
+                      <ScrollArea className="flex-1 p-4 overflow-y-auto overflow-x-hidden bg-black/10">
+                        <h3 className="text-sm font-semibold text-indigo-400 mb-2 flex items-center gap-2">
+                          💡 Logic
+                        </h3>
+                        <p className="text-gray-300 text-sm whitespace-pre-wrap leading-relaxed break-words font-mono">
+                          {ques.logic || "No logic added yet."}
+                        </p>
+                      </ScrollArea>
+                    </CardContent>
+
+                    {/* Edit Button */}
+                    <div className="absolute right-5 bottom-5 z-10">
+                      <Button
+                        onClick={() => toggleModify(ques)}
+                        className="bg-yellow-500 hover:bg-yellow-600 rounded-full w-12 h-12 shadow-lg flex items-center justify-center transition-transform hover:scale-110"
+                      >
+                        ✏️
+                      </Button>
+                    </div>
+                  </Card>
+                </motion.div>
               </div>
-            </Card>
-          </motion.div>
+            )}
+          </>
         )}
       </main>
     </div>

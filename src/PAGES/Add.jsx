@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import BASE_URL from "../UTILS/config";
 
 const Add = () => {
+  // --- LOGIC STARTS (UNCHANGED) ---
   const [question, setquestion] = useState("");
   const [logic, setlogic] = useState("");
   const [code, setcode] = useState("");
@@ -203,134 +204,211 @@ const Add = () => {
     else if (!change && topic === "DSA") handleadddsa();
     else handleaddother();
   };
+  // --- LOGIC ENDS ---
 
   if (!topic) {
     return (
-      <div className="flex justify-center items-center h-screen bg-gradient-to-br from-[#0f172a] via-[#020617] to-[#0a0a0a] text-white">
-        <p className="text-red-400 text-lg font-medium">
+      <div className="flex flex-col justify-center items-center h-screen bg-[#09090b] text-white">
+        <p className="text-red-400 text-lg font-medium bg-red-900/10 px-6 py-4 rounded-xl border border-red-900/50">
           ⚠️ No topic selected. Please go back and select one.
         </p>
       </div>
     );
   }
 
+  // --- NEW UI LAYOUT STARTS ---
   return (
-    <div className="flex justify-center items-center min-h-screen w-full bg-gradient-to-br from-[#0f172a] via-[#020617] to-[#0a0a0a] text-white px-4 py-10 overflow-y-auto">
+    <div className="min-h-screen bg-[#09090b] text-neutral-200 selection:bg-indigo-500/30 pb-12">
+      {/* Loading Overlay */}
       {submitting && (
-        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
-          <div className="bg-[#1e293b] text-white px-6 py-4 rounded-2xl shadow-lg border border-indigo-500/50">
-            <p className="text-lg font-semibold animate-pulse">
-              Submitting your question...
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 transition-all">
+          <div className="flex flex-col items-center gap-4">
+            <div className="w-10 h-10 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+            <p className="text-indigo-400 font-medium animate-pulse">
+              Saving your work...
             </p>
           </div>
         </div>
       )}
 
-      <div className="w-full max-w-2xl bg-[#0b0f1a]/80 backdrop-blur-lg border border-gray-800 rounded-3xl shadow-[0_0_25px_rgba(99,102,241,0.2)] p-6 sm:p-10">
-        <h2 className="text-2xl font-bold text-center text-indigo-400 mb-6">
-          {change
-            ? `Modify Question in ${topic}`
-            : `Add New Question to ${topic}`}
-        </h2>
-
-        <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-          {/* Question Title */}
-          <input
-            type="text"
-            placeholder="Enter Question Title"
-            className="p-3 rounded-lg bg-gray-900/60 border border-gray-700 text-white placeholder-gray-400 focus:ring-2 focus:ring-indigo-500 outline-none"
-            value={question}
-            required
-            onChange={(e) => setquestion(e.target.value)}
-          />
-
-          {/* Question Description */}
-          <textarea
-            className="p-3 rounded-lg bg-gray-900/60 border border-gray-700 text-white placeholder-gray-400 focus:ring-2 focus:ring-indigo-500 outline-none h-[180px]"
-            placeholder="Enter Question Description"
-            value={questioninfo}
-            onChange={(e) => setquestioninfo(e.target.value)}
-            required
-          ></textarea>
-
-          {/* Logic */}
-          <textarea
-            className="p-3 rounded-lg bg-gray-900/60 border border-gray-700 text-white placeholder-gray-400 focus:ring-2 focus:ring-indigo-500 outline-none h-[150px]"
-            placeholder="Enter Logic"
-            value={logic}
-            onChange={(e) => setlogic(e.target.value)}
-            required
-          ></textarea>
-
-          {/* Code (Only for DSA) */}
-          {topic === "DSA" && (
-            <textarea
-              className="p-3 rounded-lg bg-gray-900/60 border border-gray-700 text-white placeholder-gray-400 focus:ring-2 focus:ring-indigo-500 outline-none h-[180px]"
-              placeholder="Enter Code (optional)"
-              value={code}
-              onChange={(e) => setcode(e.target.value)}
-            ></textarea>
-          )}
-
-          {/* Link */}
-          <input
-            type="text"
-            placeholder="Enter Link (optional)"
-            className="p-3 rounded-lg bg-gray-900/60 border border-gray-700 text-white placeholder-gray-400 focus:ring-2 focus:ring-indigo-500 outline-none"
-            value={link}
-            onChange={(e) => setlink(e.target.value)}
-          />
-
-          {/* Subtopic Dropdown (Only for DSA) */}
-          {topic === "DSA" && (
-            <select
-              className="p-3 rounded-lg bg-gray-900/60 border border-gray-700 text-white focus:ring-2 focus:ring-indigo-500 outline-none"
-              value={subtopic}
-              onChange={(e) => setsubtopic(e.target.value)}
-              required
-            >
-              <option value="">Select Subtopic</option>
-              {subtopics.map((sub, idx) => (
-                <option key={idx} value={sub}>
-                  {sub}
-                </option>
-              ))}
-            </select>
-          )}
-
-          {/* Important */}
-          <label className="flex items-center gap-3 text-sm sm:text-base">
-            <input
-              type="checkbox"
-              checked={important}
-              onChange={() => setimportant(!important)}
-              className="h-5 w-5 accent-indigo-500"
-            />
-            Mark as Important
-          </label>
-
-          {/* Attempted (Only for DSA) */}
-          {topic === "DSA" && (
-            <label className="flex items-center gap-3 text-sm sm:text-base">
-              <input
-                type="checkbox"
-                checked={attempted}
-                onChange={() => setattempted(!attempted)}
-                className="h-5 w-5 accent-indigo-500"
-              />
-              Mark as Attempted
-            </label>
-          )}
-
-          {/* Submit Button */}
+      {/* Header Section */}
+      <header className="sticky top-0 z-40 bg-[#09090b]/80 backdrop-blur-md border-b border-white/5 px-6 py-4 mb-8">
+        <div className="max-w-7xl mx-auto flex justify-between items-center">
+          <div>
+            <h1 className="text-xl font-bold text-white tracking-tight">
+              {change ? "Edit Entry" : "Create Entry"}
+            </h1>
+            <p className="text-sm text-neutral-500">
+              Adding to <span className="text-indigo-400">{topic}</span>
+            </p>
+          </div>
+          {/* Top Right Actions */}
           <button
-            type="submit"
-            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-lg font-semibold shadow-lg transition-all duration-300"
+            onClick={handleSubmit}
+            className="hidden sm:block bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-2 rounded-lg font-medium transition-all shadow-lg shadow-indigo-900/20 text-sm"
           >
-            {submitting ? "Submitting..." : "Submit"}
+            {submitting ? "Saving..." : change ? "Save Changes" : "Publish"}
           </button>
+        </div>
+      </header>
+
+      <main className="max-w-7xl mx-auto px-4 sm:px-6">
+        <form
+          onSubmit={handleSubmit}
+          className="grid grid-cols-1 lg:grid-cols-3 gap-8"
+        >
+          {/* LEFT COLUMN: Metadata & Settings (Sticky on Desktop) */}
+          <div className="lg:col-span-1 space-y-6">
+            <div className="bg-[#18181b] rounded-2xl p-6 border border-white/5 shadow-sm sticky top-24">
+              <h3 className="text-sm font-semibold text-neutral-400 uppercase tracking-wider mb-4">
+                Basic Info
+              </h3>
+
+              <div className="space-y-4">
+                {/* Question Title */}
+                <div className="group">
+                  <label className="text-xs text-neutral-500 mb-1 block group-focus-within:text-indigo-400">
+                    Title
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Two Sum"
+                    className="w-full bg-[#27272a] border border-transparent focus:border-indigo-500/50 rounded-lg px-4 py-2.5 text-sm text-white placeholder-neutral-500 transition-all outline-none"
+                    value={question}
+                    required
+                    onChange={(e) => setquestion(e.target.value)}
+                  />
+                </div>
+
+                {/* Subtopic (DSA Only) */}
+                {topic === "DSA" && (
+                  <div className="group">
+                    <label className="text-xs text-neutral-500 mb-1 block group-focus-within:text-indigo-400">
+                      Subtopic
+                    </label>
+                    <select
+                      className="w-full bg-[#27272a] border border-transparent focus:border-indigo-500/50 rounded-lg px-4 py-2.5 text-sm text-white transition-all outline-none appearance-none"
+                      value={subtopic}
+                      onChange={(e) => setsubtopic(e.target.value)}
+                      required
+                    >
+                      <option value="">Select Category</option>
+                      {subtopics.map((sub, idx) => (
+                        <option key={idx} value={sub}>
+                          {sub}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                )}
+
+                {/* Link */}
+                <div className="group">
+                  <label className="text-xs text-neutral-500 mb-1 block group-focus-within:text-indigo-400">
+                    Reference URL
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="https://..."
+                    className="w-full bg-[#27272a] border border-transparent focus:border-indigo-500/50 rounded-lg px-4 py-2.5 text-sm text-indigo-300 placeholder-neutral-600 transition-all outline-none font-mono"
+                    value={link}
+                    onChange={(e) => setlink(e.target.value)}
+                  />
+                </div>
+
+                {/* Toggles */}
+                <div className="pt-4 flex flex-col gap-3">
+                  <label className="flex items-center justify-between p-3 rounded-lg bg-[#27272a]/50 border border-white/5 cursor-pointer hover:bg-[#27272a] transition">
+                    <span className="text-sm font-medium text-neutral-300">
+                      Important
+                    </span>
+                    <input
+                      type="checkbox"
+                      checked={important}
+                      onChange={() => setimportant(!important)}
+                      className="w-5 h-5 accent-indigo-500 rounded"
+                    />
+                  </label>
+
+                  {topic === "DSA" && (
+                    <label className="flex items-center justify-between p-3 rounded-lg bg-[#27272a]/50 border border-white/5 cursor-pointer hover:bg-[#27272a] transition">
+                      <span className="text-sm font-medium text-neutral-300">
+                        Attempted
+                      </span>
+                      <input
+                        type="checkbox"
+                        checked={attempted}
+                        onChange={() => setattempted(!attempted)}
+                        className="w-5 h-5 accent-green-500 rounded"
+                      />
+                    </label>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Mobile Only Submit Button */}
+            <button
+              type="submit"
+              className="sm:hidden w-full bg-indigo-600 text-white py-3 rounded-xl font-semibold"
+            >
+              {submitting ? "Saving..." : "Save Entry"}
+            </button>
+          </div>
+
+          {/* RIGHT COLUMN: Heavy Content */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* Description Card */}
+            <div className="bg-[#18181b] rounded-2xl p-1 border border-white/5 shadow-sm">
+              <div className="px-5 py-3 border-b border-white/5">
+                <h3 className="text-sm font-medium text-neutral-300">
+                  Problem Description
+                </h3>
+              </div>
+              <textarea
+                className="w-full h-40 bg-transparent text-neutral-200 p-5 outline-none resize-none text-base leading-relaxed placeholder-neutral-600"
+                placeholder="Describe the problem statement here..."
+                value={questioninfo}
+                onChange={(e) => setquestioninfo(e.target.value)}
+                required
+              ></textarea>
+            </div>
+
+            {/* Logic Card */}
+            <div className="bg-[#18181b] rounded-2xl p-1 border border-white/5 shadow-sm">
+              <div className="px-5 py-3 border-b border-white/5 flex items-center justify-between">
+                <h3 className="text-sm font-medium text-amber-500">
+                  Logic & Approach
+                </h3>
+              </div>
+              <textarea
+                className="w-full h-48 bg-transparent text-neutral-200 p-5 outline-none resize-y text-base font-mono leading-relaxed placeholder-neutral-600"
+                placeholder="Explain your thought process..."
+                value={logic}
+                onChange={(e) => setlogic(e.target.value)}
+                required
+              ></textarea>
+            </div>
+
+            {/* Code Card (DSA Only) */}
+            {topic === "DSA" && (
+              <div className="bg-[#18181b] rounded-2xl p-1 border border-white/5 shadow-sm overflow-hidden">
+                <div className="px-5 py-3 border-b border-white/5 bg-[#121214]">
+                  <h3 className="text-sm font-medium text-emerald-500">
+                    Solution Code
+                  </h3>
+                </div>
+                <textarea
+                  className="w-full h-96 bg-[#0c0c0e] text-emerald-100 p-5 outline-none resize-y text-sm font-mono leading-relaxed placeholder-neutral-700"
+                  placeholder="// Paste your solution code here"
+                  value={code}
+                  onChange={(e) => setcode(e.target.value)}
+                ></textarea>
+              </div>
+            )}
+          </div>
         </form>
-      </div>
+      </main>
     </div>
   );
 };

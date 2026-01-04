@@ -7,7 +7,8 @@ import Card1 from "./PAGES/Card1";
 import Signup from "./PAGES/Signup";
 import IntroPage from "./PAGES/IntroPage";
 import Hero from "./PAGES/Hero";
-import Quesdisply from "./PAGES/Quesdisply";
+// import Quesdisply from "./PAGES/Quesdisply";
+import Quesdisply from "./PAGES/QuesDisplay/Quesdisply";
 import Otherdisply from "./PAGES/Otherdisply";
 import Selectadd from "./PAGES/Selectadd";
 import Add from "./PAGES/Add";
@@ -80,7 +81,15 @@ const App = () => {
 
               <Route
                 path="/questions"
-                element={<ProtectedRoute element={<Quesdisply />} />}
+                element={
+                  <ProtectedRoute
+                    element={
+                      <Layout>
+                        <Quesdisply />{" "}
+                      </Layout>
+                    }
+                  />
+                }
               />
 
               <Route
