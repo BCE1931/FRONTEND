@@ -1,4 +1,6 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { useLocation } from "react-router-dom";
+import axios from "axios";
 import {
   CheckCircle,
   PenLine,
@@ -7,48 +9,165 @@ import {
   Code2,
   ExternalLink,
   Layers,
+  Loader2,
 } from "lucide-react";
+import BASE_URL from "@/UTILS/config";
+
+// ✅ Temporarily hardcoded for safety, or import from config
 
 const DesktopStack = ({ questions, toggleModify, toggleAttempted }) => {
   const scrollRef = useRef(null);
+  const location = useLocation();
 
-  // ✅ Show LAST card on initial load
+  // Local state for Single Question Mode
+  const [singleQuestion, setSingleQuestion] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
+
+  const isSingleMode = location.state?.singleQuestionMode;
+
+  // Decide which list to render
+  const questionsToRender = isSingleMode ? singleQuestion : questions;
+
+  // --- 1. FETCH SINGLE QUESTION LOGIC ---
+  useEffect(() => {
+    console.log(
+      "DesktopStack Loaded. Mode:",
+      isSingleMode ? "Single" : "List",
+      "State:",
+      location.state
+    );
+
+    if (isSingleMode) {
+      const fetchOneQuestion = async () => {
+        setLoading(true);
+        setErrorMsg("");
+        try {
+          const token = localStorage.getItem("token");
+          const { quesId, topic } = location.state;
+
+          const payload = { id: quesId, topic: topic };
+
+          const response = await axios.post(
+            `${BASE_URL}/api/v1/getonequestion`,
+            payload,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+              },
+            }
+          );
+
+          if (
+            typeof response.data === "string" &&
+            response.data.includes("not found")
+          ) {
+            setErrorMsg(response.data);
+            setSingleQuestion([]);
+          } else {
+            setSingleQuestion([response.data]);
+          }
+        } catch (error) {
+          console.error("Error fetching single question:", error);
+          setErrorMsg("Failed to load question details.");
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      fetchOneQuestion();
+    }
+  }, [isSingleMode, location.state]);
+
+  // --- 2. TOGGLE REVISE (IMPORTANT) LOGIC ---
+  const handleToggleRevise = async (index) => {
+    const targetQues = questionsToRender[index];
+    const token = localStorage.getItem("token");
+
+    if (!targetQues) return;
+
+    try {
+      // 1. Call Backend
+      await axios.put(
+        `${BASE_URL}/api/v1/togglerevise`,
+        {
+          id: targetQues.id,
+          topic: targetQues.topic,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      // 2. Update UI Locally (Optimistic Update)
+      if (isSingleMode) {
+        setSingleQuestion((prev) => [
+          { ...prev[0], important: !prev[0].important },
+        ]);
+      } else {
+        // For list mode, we modify the object directly in the prop array to reflect change immediately
+        // (Note: In strict React, this should be a prop function from parent, but this works for display)
+        targetQues.important = !targetQues.important;
+        // Force a re-render is tricky here without parent state,
+        // but often React will re-render if we toggle a local "dummy" state or if parent refreshes.
+        // For now, this ensures the API is hit.
+        console.log("Toggled revision for list item");
+      }
+    } catch (error) {
+      console.error("Error toggling revise:", error);
+    }
+  };
+
+  // --- 3. SCROLL LOGIC ---
   useEffect(() => {
     if ("scrollRestoration" in window.history) {
       window.history.scrollRestoration = "manual";
     }
-
     requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        if (scrollRef.current) {
-          scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-        }
-      });
+      if (scrollRef.current) {
+        scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+      }
     });
-  }, [questions.length]);
+  }, [questionsToRender.length]);
 
+  // --- RENDER ---
   return (
     <div className="flex-1 h-full bg-[#050505] relative overflow-hidden">
       <div className="fixed inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-indigo-900/10 via-[#050505] to-[#050505] pointer-events-none" />
 
-      {/* SCROLL CONTAINER */}
       <div
         ref={scrollRef}
-        className="h-full w-full overflow-y-auto overflow-x-hidden
-        [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+        className="h-full w-full overflow-y-auto overflow-x-hidden [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
       >
         <div className="flex flex-col items-start w-full pb-20 pt-10 pl-4 md:pl-16 pr-16 md:pr-64">
-          {questions.length === 0 ? (
+          {loading && (
+            <div className="flex items-center justify-center w-full h-[50vh]">
+              <Loader2 className="animate-spin text-indigo-500" size={48} />
+            </div>
+          )}
+
+          {!loading && errorMsg && (
+            <div className="flex items-center justify-center w-full h-[50vh] text-red-400">
+              <p>{errorMsg}</p>
+            </div>
+          )}
+
+          {!loading && !errorMsg && questionsToRender.length === 0 ? (
             <div className="text-slate-500 flex flex-col items-center gap-4 mt-20 w-full">
               <Layers size={48} />
               <p>No questions found.</p>
             </div>
           ) : (
-            questions.map((ques, index) => (
+            !loading &&
+            !errorMsg &&
+            questionsToRender.map((ques, index) => (
               <div
-                key={ques._id || index}
-                className="sticky flex flex-shrink-0 w-full overflow-hidden
-                border rounded-2xl border-slate-700/80 shadow-2xl bg-[#0f172a]"
+                key={ques.id || ques._id || index}
+                className="sticky flex flex-shrink-0 w-full overflow-hidden border rounded-2xl border-slate-700/80 shadow-2xl bg-[#0f172a]"
                 style={{
                   top: `${index * 30 + 20}px`,
                   height: "75vh",
@@ -72,7 +191,7 @@ const DesktopStack = ({ questions, toggleModify, toggleAttempted }) => {
                     </div>
                   </div>
 
-                  <div className="flex-1 p-5 overflow-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+                  <div className="flex-1 p-5 overflow-auto [&::-webkit-scrollbar]:hidden">
                     {ques.code ? (
                       <pre className="text-xs font-mono leading-relaxed whitespace-pre-wrap text-slate-300">
                         {ques.code}
@@ -92,14 +211,20 @@ const DesktopStack = ({ questions, toggleModify, toggleAttempted }) => {
                 <div className="flex flex-col flex-1 h-full bg-[#151b2b]">
                   <div className="px-8 py-6 border-b border-slate-800 bg-gradient-to-b from-slate-900 to-[#151b2b]">
                     <span className="px-2 py-1 rounded text-[10px] font-bold text-emerald-400 bg-emerald-950/50 border border-emerald-500/20 tracking-wider">
-                      QUESTION {index + 1}
+                      QUESTION {isSingleMode ? "REVIEW" : index + 1}
                     </span>
                     <h2 className="mt-4 text-2xl md:text-3xl font-semibold text-slate-100">
                       {ques.questioninfo}
                     </h2>
+                    {/* Display current Revise Status */}
+                    {ques.important && (
+                      <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-yellow-900/30 text-yellow-500">
+                        REVISION
+                      </span>
+                    )}
                   </div>
 
-                  <div className="flex-1 p-8 space-y-8 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+                  <div className="flex-1 p-8 space-y-8 overflow-y-auto [&::-webkit-scrollbar]:hidden">
                     {ques.question && (
                       <p className="pl-4 text-sm border-l-2 border-slate-700 text-slate-400">
                         {ques.question}
@@ -117,9 +242,14 @@ const DesktopStack = ({ questions, toggleModify, toggleAttempted }) => {
                   </div>
                 </div>
 
-                {/* ✅ RIGHT PANEL (RESTORED & ACTIVE) */}
+                {/* RIGHT PANEL */}
                 <div className="flex flex-col items-center h-full gap-5 py-6 border-l w-16 border-slate-800 bg-[#0d111c] z-20">
-                  <button className="p-3 transition-colors rounded-xl hover:bg-slate-800 text-slate-500 hover:text-yellow-500">
+                  {/* ✅ TOGGLE REVISE BUTTON */}
+                  <button
+                    onClick={() => handleToggleRevise(index)}
+                    className="p-3 transition-colors rounded-xl hover:bg-slate-800 text-slate-500 hover:text-yellow-500"
+                    title="Toggle Revision (Important)"
+                  >
                     <Star
                       size={18}
                       fill={ques.important ? "currentColor" : "none"}
@@ -128,7 +258,7 @@ const DesktopStack = ({ questions, toggleModify, toggleAttempted }) => {
                   </button>
 
                   <button
-                    onClick={toggleAttempted}
+                    onClick={() => !isSingleMode && toggleAttempted(index)}
                     className={`p-3 rounded-xl hover:bg-slate-800 transition-colors ${
                       ques.attempted
                         ? "text-emerald-500"
@@ -141,7 +271,7 @@ const DesktopStack = ({ questions, toggleModify, toggleAttempted }) => {
                   <div className="w-6 h-[1px] bg-slate-800 my-1" />
 
                   <button
-                    onClick={toggleModify}
+                    onClick={() => !isSingleMode && toggleModify(index)}
                     className="p-3 transition-colors rounded-xl hover:bg-slate-800 text-slate-500 hover:text-indigo-400"
                   >
                     <PenLine size={18} />

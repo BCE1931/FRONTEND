@@ -10,12 +10,13 @@ import { toast } from "sonner";
 import BASE_URL from "../UTILS/config";
 
 const Add = () => {
-  // --- LOGIC STARTS (UNCHANGED) ---
+  // --- LOGIC STARTS ---
   const [question, setquestion] = useState("");
   const [logic, setlogic] = useState("");
   const [code, setcode] = useState("");
   const [link, setlink] = useState("");
   const [subtopic, setsubtopic] = useState("");
+  const [level, setLevel] = useState("easy"); // ✅ Added Level State
   const [important, setimportant] = useState(false);
   const [attempted, setattempted] = useState(false);
   const [questioninfo, setquestioninfo] = useState("");
@@ -37,6 +38,7 @@ const Add = () => {
       setimportant(ques.important || false);
       setsubtopic(ques.subtopic || "");
       setquestioninfo(ques.questioninfo || "");
+      setLevel(ques.level || "Easy"); // ✅ Load existing level
     }
   }, [change, ques]);
 
@@ -103,6 +105,7 @@ const Add = () => {
           attempted,
           subtopic,
           link,
+          level, // ✅ Send Level
         }),
       });
       if (resp.status === 401) {
@@ -135,6 +138,7 @@ const Add = () => {
           logic,
           questioninfo,
           topic,
+          level, // ✅ Send Level
         }),
       });
       if (resp.status === 401) {
@@ -170,6 +174,7 @@ const Add = () => {
           attempted,
           subtopic,
           link,
+          level, // ✅ Send Level
         }),
       });
       if (resp.status === 401) {
@@ -196,6 +201,7 @@ const Add = () => {
     setlink("");
     setattempted(false);
     setsubtopic("");
+    setLevel("Easy"); // ✅ Reset Level
   };
 
   const handleSubmit = (e) => {
@@ -216,7 +222,7 @@ const Add = () => {
     );
   }
 
-  // --- NEW UI LAYOUT STARTS ---
+  // --- UI LAYOUT STARTS ---
   return (
     <div className="min-h-screen bg-[#09090b] text-neutral-200 selection:bg-indigo-500/30 pb-12">
       {/* Loading Overlay */}
@@ -280,6 +286,22 @@ const Add = () => {
                   />
                 </div>
 
+                {/* ✅ Level Selection (Easy, Medium, Hard) */}
+                <div className="group">
+                  <label className="text-xs text-neutral-500 mb-1 block group-focus-within:text-indigo-400">
+                    Difficulty Level
+                  </label>
+                  <select
+                    className="w-full bg-[#27272a] border border-transparent focus:border-indigo-500/50 rounded-lg px-4 py-2.5 text-sm text-white transition-all outline-none appearance-none cursor-pointer"
+                    value={level}
+                    onChange={(e) => setLevel(e.target.value)}
+                  >
+                    <option value="easy">Easy</option>
+                    <option value="medium">Medium</option>
+                    <option value="hard">Hard</option>
+                  </select>
+                </div>
+
                 {/* Subtopic (DSA Only) */}
                 {topic === "DSA" && (
                   <div className="group">
@@ -287,7 +309,7 @@ const Add = () => {
                       Subtopic
                     </label>
                     <select
-                      className="w-full bg-[#27272a] border border-transparent focus:border-indigo-500/50 rounded-lg px-4 py-2.5 text-sm text-white transition-all outline-none appearance-none"
+                      className="w-full bg-[#27272a] border border-transparent focus:border-indigo-500/50 rounded-lg px-4 py-2.5 text-sm text-white transition-all outline-none appearance-none cursor-pointer"
                       value={subtopic}
                       onChange={(e) => setsubtopic(e.target.value)}
                       required

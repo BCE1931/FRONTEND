@@ -9,14 +9,14 @@ import { toast } from "sonner";
 import { useLocation, useNavigate } from "react-router-dom";
 import BASE_URL from "../../UTILS/config";
 import { Button } from "@/components/ui/button";
-import { Monitor, Smartphone } from "lucide-react"; // Make sure to install lucide-react or use standard emojis
+import { Monitor, Smartphone } from "lucide-react";
 
 // Sub-components
 import LoadingSpinner from "./LoadingSpinner";
 import EmptyWorkState from "./EmptyWorkState";
 import Sidebar from "./Sidebar";
 import QuestionCard from "./QuestionCard";
-import DesktopStack from "./DesktopStack"; // Import the new component
+import DesktopStack from "./DesktopStack";
 
 const Quesdisply = () => {
   const [quesList, setQuesList] = useState([]);
@@ -42,7 +42,10 @@ const Quesdisply = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Hardcoded topics (preserved from your code)
+  // ✅ CHECK: Are we in Single Question Mode? (Navigated from Hero)
+  const isSingleMode = location.state?.singleQuestionMode;
+
+  // Hardcoded topics
   const topics = [
     { topic: "Array", count: 18 },
     { topic: "Dynamic Programming", count: 16 },
@@ -82,12 +85,8 @@ const Quesdisply = () => {
       const desktop = window.innerWidth > 768;
       setIsDesktop(desktop);
       // If we switch to mobile, force 'classic' view.
-      // If desktop, we keep the user's preference or default to carousel.
       if (!desktop) {
         setViewMode("classic");
-      } else if (viewMode === "classic" && desktop) {
-        // Optional: Reset to carousel on resize to desktop, or keep "classic"
-        // setViewMode("carousel");
       }
     };
 
@@ -104,13 +103,12 @@ const Quesdisply = () => {
     }
   };
 
-  // --- API & Logic Functions (Preserved) ---
+  // --- API & Logic Functions ---
   const toggleDates = () => setShowDates(!showDates);
   const toggleList = () => setShowList(!showList);
   const toggleTopics = () => setShowTopics(!showTopics);
 
   const getquestions = () => {
-    // Existing logic commented out in your code, keeping strictly as provided
     console.log("tying to fetch question");
   };
 
@@ -303,9 +301,15 @@ const Quesdisply = () => {
       {/* 🔄 Loading State */}
       {isFetching ? (
         <LoadingSpinner />
-      ) : quesList && Array.isArray(quesList) && quesList.length === 0 ? (
+      ) : // ✅ LOGIC UPDATE: If list is empty AND NOT in single mode, show Empty State.
+      // If we ARE in single mode, we skip this to allow DesktopStack to fetch.
+      quesList &&
+        Array.isArray(quesList) &&
+        quesList.length === 0 &&
+        !isSingleMode ? (
         <EmptyWorkState onNavigate={handlenavigate} />
-      ) : quesList.length > 0 ? (
+      ) : // Render content if there are questions OR we are in single mode
+      quesList.length > 0 || isSingleMode ? (
         <>
           {/* --- VIEW MODE TOGGLER (Desktop Only) --- */}
           {isDesktop && (
