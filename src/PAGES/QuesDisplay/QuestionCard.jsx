@@ -18,10 +18,10 @@ const QuestionCard = ({
         {/* --- Top Half: Question Section --- */}
         <div className="flex-1 max-h-[50%] p-6 overflow-y-auto scrollbar-visible border-b border-gray-700">
           <h2 className="text-lg font-semibold text-center mb-3 text-indigo-300">
-            {ques.question}
+            {ques.questioninfo}
           </h2>
           <p className="text-gray-300 text-sm leading-relaxed whitespace-pre-wrap">
-            {ques.questioninfo || "No additional info available"}
+            {ques.question || "No additional info available"}
           </p>
         </div>
 

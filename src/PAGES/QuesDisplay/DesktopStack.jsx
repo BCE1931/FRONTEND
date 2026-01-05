@@ -95,14 +95,14 @@ const DesktopStack = ({ questions, toggleModify, toggleAttempted }) => {
                       QUESTION {index + 1}
                     </span>
                     <h2 className="mt-4 text-2xl md:text-3xl font-semibold text-slate-100">
-                      {ques.question}
+                      {ques.questioninfo}
                     </h2>
                   </div>
 
                   <div className="flex-1 p-8 space-y-8 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-                    {ques.questioninfo && (
+                    {ques.question && (
                       <p className="pl-4 text-sm border-l-2 border-slate-700 text-slate-400">
-                        {ques.questioninfo}
+                        {ques.question}
                       </p>
                     )}
 

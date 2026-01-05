@@ -274,9 +274,9 @@ const Add = () => {
                     type="text"
                     placeholder="e.g. Two Sum"
                     className="w-full bg-[#27272a] border border-transparent focus:border-indigo-500/50 rounded-lg px-4 py-2.5 text-sm text-white placeholder-neutral-500 transition-all outline-none"
-                    value={question}
+                    value={questioninfo}
                     required
-                    onChange={(e) => setquestion(e.target.value)}
+                    onChange={(e) => setquestioninfo(e.target.value)}
                   />
                 </div>
 
@@ -368,8 +368,8 @@ const Add = () => {
               <textarea
                 className="w-full h-40 bg-transparent text-neutral-200 p-5 outline-none resize-none text-base leading-relaxed placeholder-neutral-600"
                 placeholder="Describe the problem statement here..."
-                value={questioninfo}
-                onChange={(e) => setquestioninfo(e.target.value)}
+                value={question}
+                onChange={(e) => setquestion(e.target.value)}
                 required
               ></textarea>
             </div>

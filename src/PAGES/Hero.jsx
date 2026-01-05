@@ -23,13 +23,6 @@ import {
   CheckCircle2,
 } from "lucide-react";
 
-//THINGS TO DO IN THIS PAGE
-//NAVIDATING TO WORK PAGES
-//FETCHING REVISE TOPICS
-//DIFFICULTY LEVEL FETHCING
-//HISTORY FETCHING
-//PREVIOS YEAR VALENDER FETCHING
-
 const Hero = () => {
   const navigate = useNavigate();
 

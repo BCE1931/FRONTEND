@@ -328,7 +328,9 @@ const Otherdisply = () => {
                         }`}
                       >
                         <div className="flex justify-between items-center gap-2">
-                          <span className="truncate flex-1">{q.question}</span>
+                          <span className="truncate flex-1">
+                            {q.questioninfo}
+                          </span>
                           <div className="flex gap-1 shrink-0">
                             {q.important && (
                               <Badge
@@ -380,7 +382,7 @@ const Otherdisply = () => {
                   <Card className="flex-1 h-full bg-[#0b0f1a]/80 border border-gray-800 shadow-[0_0_25px_rgba(99,102,241,0.25)] rounded-3xl overflow-hidden backdrop-blur-xl text-white flex flex-col">
                     <CardHeader className="border-b border-gray-700 px-3 py-2 sm:px-4 sm:py-3 bg-black/20">
                       <CardTitle className="text-base sm:text-lg font-medium text-indigo-300 text-center leading-snug truncate">
-                        {ques.question || "No question text"}
+                        {ques.questioninfo || "No question text"}
                       </CardTitle>
                     </CardHeader>
 
@@ -391,7 +393,7 @@ const Otherdisply = () => {
                           📌 Question
                         </h3>
                         <p className="text-gray-300 text-sm whitespace-pre-wrap leading-relaxed break-words">
-                          {ques.questioninfo || "No additional info available."}
+                          {ques.question || "No additional info available."}
                         </p>
                       </ScrollArea>
 
