@@ -171,7 +171,7 @@ const QuickModules = () => {
 
         {/* Block 2: AI Examination Mode */}
         <div
-          onClick={() => navigate("/ai-exam")}
+          onClick={() => navigate("/aiselectionpage")}
           className="group relative p-8 bg-[#1a1d26] hover:bg-[#20242f] rounded-[32px] border border-white/5 hover:border-violet-500/30 transition-all duration-300 cursor-pointer shadow-lg hover:shadow-violet-900/10 flex flex-col justify-between min-h-[220px]"
         >
           <div className="flex items-start justify-between">

@@ -206,6 +206,13 @@ const Add = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    // 🛑 VALIDATION ADDED HERE
+    if (!logic || logic.trim() === "") {
+      toast.error("Logic & Approach cannot be empty!");
+      return;
+    }
+
     if (change) handlechange();
     else if (!change && topic === "DSA") handleadddsa();
     else handleaddother();
@@ -408,6 +415,7 @@ const Add = () => {
                 placeholder="Explain your thought process..."
                 value={logic}
                 onChange={(e) => setlogic(e.target.value)}
+                // Although 'required' attribute helps, manual validation in handleSubmit ensures it.
                 required
               ></textarea>
             </div>

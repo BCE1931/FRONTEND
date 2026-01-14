@@ -18,6 +18,7 @@ const DesktopStack = ({
   toggleModify,
   toggleAttempted,
   // 👇 NEW PROP: Defaults to false for normal view
+
   isCompareMode = false,
 }) => {
   const scrollRef = useRef(null);

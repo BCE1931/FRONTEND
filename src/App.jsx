@@ -16,6 +16,8 @@ import Middle from "./PAGES/Middle";
 import { Toaster } from "@/components/ui/sonner";
 import Resetpwd from "./PAGES/Resetpwd";
 import Profile from "./PAGES/Profile/Profile";
+import SelectionPage from "./PAGES/AI_FOLDER/SelectionPage";
+import ExamMode from "./PAGES/AI_FOLDER/ExamMode";
 
 const App = () => {
   const PublicRoute = ({ element }) => {
@@ -106,6 +108,16 @@ const App = () => {
               <Route
                 path="/add"
                 element={<ProtectedRoute element={<Add />} />}
+              />
+
+              <Route
+                path="/aiselectionpage"
+                element={<ProtectedRoute element={<SelectionPage />} />}
+              />
+
+              <Route
+                path="/exam"
+                element={<ProtectedRoute element={<ExamMode />} />}
               />
 
               <Route
