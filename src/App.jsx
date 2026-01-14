@@ -15,6 +15,7 @@ import Add from "./PAGES/Add";
 import Middle from "./PAGES/Middle";
 import { Toaster } from "@/components/ui/sonner";
 import Resetpwd from "./PAGES/Resetpwd";
+import Profile from "./PAGES/Profile/Profile";
 
 const App = () => {
   const PublicRoute = ({ element }) => {
@@ -112,9 +113,10 @@ const App = () => {
                 element={
                   <ProtectedRoute
                     element={
-                      <Layout>
-                        <Hero />
-                      </Layout>
+                      // <Layout>
+                      //   <Hero />
+                      // </Layout>
+                      <Profile />
                     }
                   />
                 }
