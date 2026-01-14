@@ -13,9 +13,13 @@ import {
 } from "lucide-react";
 import BASE_URL from "@/UTILS/config";
 
-// ✅ Temporarily hardcoded for safety, or import from config
-
-const DesktopStack = ({ questions, toggleModify, toggleAttempted }) => {
+const DesktopStack = ({
+  questions,
+  toggleModify,
+  toggleAttempted,
+  // 👇 NEW PROP: Defaults to false for normal view
+  isCompareMode = false,
+}) => {
   const scrollRef = useRef(null);
   const location = useLocation();
 
@@ -109,12 +113,8 @@ const DesktopStack = ({ questions, toggleModify, toggleAttempted }) => {
           { ...prev[0], important: !prev[0].important },
         ]);
       } else {
-        // For list mode, we modify the object directly in the prop array to reflect change immediately
-        // (Note: In strict React, this should be a prop function from parent, but this works for display)
+        // For list mode, we modify the object directly for immediate visual feedback
         targetQues.important = !targetQues.important;
-        // Force a re-render is tricky here without parent state,
-        // but often React will re-render if we toggle a local "dummy" state or if parent refreshes.
-        // For now, this ensures the API is hit.
         console.log("Toggled revision for list item");
       }
     } catch (error) {
@@ -143,7 +143,14 @@ const DesktopStack = ({ questions, toggleModify, toggleAttempted }) => {
         ref={scrollRef}
         className="h-full w-full overflow-y-auto overflow-x-hidden [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
       >
-        <div className="flex flex-col items-start w-full pb-20 pt-10 pl-4 md:pl-16 pr-16 md:pr-64">
+        {/* 👇 CONDITIONAL PADDING LOGIC */}
+        <div
+          className={`flex flex-col items-start w-full transition-all duration-300 ${
+            isCompareMode
+              ? "p-0" // COMPARE MODE: No padding, fills the split pane
+              : "pb-20 pt-10 pl-4 md:pl-16 pr-16 md:pr-64" // NORMAL MODE: Original spacing
+          }`}
+        >
           {loading && (
             <div className="flex items-center justify-center w-full h-[50vh]">
               <Loader2 className="animate-spin text-indigo-500" size={48} />
@@ -169,7 +176,10 @@ const DesktopStack = ({ questions, toggleModify, toggleAttempted }) => {
                 key={ques.id || ques._id || index}
                 className="sticky flex flex-shrink-0 w-full overflow-hidden border rounded-2xl border-slate-700/80 shadow-2xl bg-[#0f172a]"
                 style={{
-                  top: `${index * 30 + 20}px`,
+                  // Adjust positioning for compare mode
+                  top: isCompareMode
+                    ? `${index * 5}px`
+                    : `${index * 30 + 20}px`,
                   height: "75vh",
                   marginBottom: "5vh",
                   zIndex: index + 1,

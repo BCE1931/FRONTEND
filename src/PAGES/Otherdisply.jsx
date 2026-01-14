@@ -12,7 +12,7 @@ import { Card, CardTitle, CardHeader, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
-import { Monitor, Smartphone, Loader2 } from "lucide-react"; // Updated icons
+import { Monitor, Smartphone, Loader2, Copy } from "lucide-react"; // Updated icons
 import { motion } from "framer-motion";
 
 // Sub-components
@@ -20,6 +20,7 @@ import WorkHeader from "./QuesDisplay/WorkHeader";
 import EmptyWorkState from "./QuesDisplay/EmptyWorkState";
 import LoadingSpinner from "./QuesDisplay/LoadingSpinner";
 import DesktopStack from "./QuesDisplay/DesktopStack";
+import CompareView from "./QuesDisplay/CompareView";
 
 const Otherdisply = () => {
   const [quesList, setQuesList] = useState([]);
@@ -28,6 +29,7 @@ const Otherdisply = () => {
   const [selectedDate, setSelectedDate] = useState("All");
   const [days, setdays] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isCompareMode, setIsCompareMode] = useState(false);
 
   // --- Code 1 Specific State ---
   const [showList, setShowList] = useState(false);
@@ -49,6 +51,7 @@ const Otherdisply = () => {
       // If desktop, respect user choice (defaults to carousel).
       if (!desktop) {
         setViewMode("detailed");
+        setIsCompareMode(false);
       }
     };
 
@@ -152,6 +155,10 @@ const Otherdisply = () => {
     getworkquestions();
   }, []);
 
+  const handleCompareClick = () => {
+    setIsCompareMode(true);
+  };
+
   const filterByDate = (date) => {
     setSelectedDate(date);
     const filtered =
@@ -235,9 +242,24 @@ const Otherdisply = () => {
 
   return (
     <div className="relative flex flex-col h-[100dvh] sm:h-screen bg-gradient-to-br from-[#0f172a] via-[#020617] to-[#0a0a0a] text-white overflow-hidden">
+      {isCompareMode && isDesktop && (
+        <CompareView
+          question={filteredQues} // Passing the array as 'question' per your request
+          onClose={() => setIsCompareMode(false)}
+          toggleModify={toggleModify} // Required by DesktopStack
+          toggleAttempted={toggleAttempted} // Required by DesktopStack
+        />
+      )}
       {/* --- Code 2 Logic: Toggle Button (Desktop Only) --- */}
       {isDesktop && !loading && filteredQues.length > 0 && (
-        <div className="fixed top-20 right-4 z-50">
+        <div className="fixed top-20 right-4 z-50 flex gap-3">
+          <Button
+            onClick={handleCompareClick}
+            variant="outline"
+            className="bg-gray-900/80 backdrop-blur border-gray-700 text-green-400 hover:bg-green-900/30 flex gap-2 items-center rounded-full px-4"
+          >
+            <Copy size={16} /> Compare
+          </Button>
           <Button
             onClick={toggleViewMode}
             variant="outline"
