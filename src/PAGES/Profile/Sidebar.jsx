@@ -12,6 +12,7 @@ import {
   CreditCard,
   Settings,
   ChevronUp,
+  ClipboardCheck,
 } from "lucide-react";
 
 const Sidebar = ({ activeTab, setActiveTab, isOpen, onClose }) => {
@@ -47,6 +48,7 @@ const Sidebar = ({ activeTab, setActiveTab, isOpen, onClose }) => {
     { id: "activity", label: "Activity", icon: <Calendar size={18} /> },
     { id: "important", label: "Revision", icon: <Bookmark size={18} /> },
     { id: "stats", label: "Analytics", icon: <BarChart2 size={18} /> },
+    { id: "exams", label: "Examinations", icon: <ClipboardCheck size={18} /> },
   ];
 
   return (

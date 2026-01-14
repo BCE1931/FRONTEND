@@ -6,6 +6,7 @@ import QuickModules from "./QuickModules";
 import ActivitySection from "./ActivitySection";
 import ImportantTopics from "./ImportantTopics";
 import StatsSection from "./StatsSection";
+import Examinations from "./Examinations";
 
 const BASE_URL = "http://localhost:8080";
 
@@ -25,6 +26,7 @@ const Profile = () => {
           headers: { Authorization: `Bearer ${token}` },
         });
         setHeroData(response.data);
+        console.log(response.data);
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
@@ -48,6 +50,8 @@ const Profile = () => {
         return <QuickModules />;
       case "activity":
         return <ActivitySection heroData={heroData} />;
+      case "exams":
+        return <Examinations heroData={heroData} />;
       case "important":
         return <ImportantTopics heroData={heroData} />;
       case "stats":
