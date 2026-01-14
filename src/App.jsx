@@ -86,7 +86,7 @@ const App = () => {
                   <ProtectedRoute
                     element={
                       <Layout>
-                        <Quesdisply />{" "}
+                        <Quesdisply />
                       </Layout>
                     }
                   />
