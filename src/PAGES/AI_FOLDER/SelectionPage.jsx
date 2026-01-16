@@ -22,9 +22,7 @@ import {
   CheckCircle2,
 } from "lucide-react";
 import { toast } from "sonner";
-
-// CONFIG
-const BASE_URL = "http://localhost:8080";
+import BASE_URL from "@/UTILS/config";
 
 const SelectionPage = () => {
   const navigate = useNavigate();

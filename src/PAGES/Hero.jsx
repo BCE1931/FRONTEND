@@ -24,9 +24,9 @@ import {
   Loader2,
   Layers,
 } from "lucide-react";
+import BASE_URL from "@/UTILS/config";
 
 // Ideally, this comes from your config or .env
-const BASE_URL = "http://localhost:8080";
 
 const Hero = () => {
   const navigate = useNavigate();

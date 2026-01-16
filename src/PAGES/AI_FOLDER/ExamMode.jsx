@@ -14,9 +14,7 @@ import {
   Maximize2,
   User,
 } from "lucide-react";
-
-// CONFIG
-const BASE_URL = "http://localhost:8080";
+import BASE_URL from "@/UTILS/config";
 
 const ExamMode = () => {
   const location = useLocation();

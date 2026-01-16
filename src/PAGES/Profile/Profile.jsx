@@ -7,8 +7,7 @@ import ActivitySection from "./ActivitySection";
 import ImportantTopics from "./ImportantTopics";
 import StatsSection from "./StatsSection";
 import Examinations from "./Examinations";
-
-const BASE_URL = "http://localhost:8080";
+import BASE_URL from "@/UTILS/config";
 
 const Profile = () => {
   const [heroData, setHeroData] = useState(null);
